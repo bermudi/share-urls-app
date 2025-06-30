@@ -130,24 +130,32 @@ function App() {
   const handlePublish = async (shareUrl: string) => {
     try {
       console.log('Publishing bundle...');
+      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+      console.log('Supabase Key present:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
       
       // Create bundle in database
       const bundleId = generateId();
+      console.log('Generated bundle ID:', bundleId);
+      
+      const bundleData = {
+        id: bundleId,
+        vanity_url: vanityUrl || null,
+        description: description || null,
+        published: true,
+        user_id: null // Explicitly set to null for anonymous users
+      };
+      
+      console.log('Bundle data to insert:', bundleData);
+      
       const { data: bundle, error: bundleError } = await supabase
         .from('bundles')
-        .insert({
-          id: bundleId,
-          vanity_url: vanityUrl || null,
-          description: description || null,
-          published: true
-        })
+        .insert(bundleData)
         .select()
         .single();
 
       if (bundleError) {
         console.error('Error creating bundle:', bundleError);
-        alert('Failed to publish bundle. Please try again.');
-        return;
+        throw new Error(`Failed to create bundle: ${bundleError.message}`);
       }
 
       console.log('Bundle created:', bundle);
@@ -163,14 +171,15 @@ function App() {
         position: index
       }));
 
+      console.log('Links to insert:', linksToInsert);
+
       const { error: linksError } = await supabase
         .from('bundle_links')
         .insert(linksToInsert);
 
       if (linksError) {
         console.error('Error creating links:', linksError);
-        alert('Failed to publish bundle links. Please try again.');
-        return;
+        throw new Error(`Failed to create links: ${linksError.message}`);
       }
 
       console.log('Links created successfully');
@@ -192,7 +201,8 @@ function App() {
       
     } catch (err) {
       console.error('Error publishing bundle:', err);
-      alert('Failed to publish bundle. Please try again.');
+      alert(`Failed to publish bundle: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      throw err; // Re-throw to be caught by PublishButton
     }
   };
 
