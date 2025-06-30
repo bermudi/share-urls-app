@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Loader2 } from 'lucide-react';
 import { isValidUrl, fetchUrlMetadata, generateId } from '../utils/urlUtils';
+import { useTranslation } from '../hooks/useTranslation';
 import type { LinkItem } from '../types';
 
 interface UrlInputProps {
@@ -8,6 +9,7 @@ interface UrlInputProps {
 }
 
 export function UrlInput({ onAddLink }: UrlInputProps) {
+  const { t } = useTranslation();
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,7 +20,7 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
     if (!url.trim()) return;
     
     if (!isValidUrl(url.trim())) {
-      setError('Please enter a valid URL');
+      setError(t.errors.invalidUrl);
       return;
     }
 
@@ -39,7 +41,7 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
       onAddLink(newLink);
       setUrl('');
     } catch (err) {
-      setError('Failed to fetch link information');
+      setError(t.errors.fetchFailed);
       console.error('Error adding link:', err);
     } finally {
       setIsLoading(false);
@@ -56,7 +58,7 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
             setUrl(e.target.value);
             setError('');
           }}
-          placeholder="Enter a link and press enter"
+          placeholder={t.main.urlPlaceholder}
           disabled={isLoading}
           className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors disabled:opacity-50"
         />
