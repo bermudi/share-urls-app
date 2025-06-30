@@ -12,14 +12,13 @@
         const theme = localStorage.getItem('theme') || 'system';
         const root = document.documentElement;
         
-        // Remove any existing theme classes
-        root.classList.remove('light', 'dark');
-        
         if (theme === 'system') {
           const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          root.classList.add(systemTheme);
-        } else {
-          root.classList.add(theme);
+          if (systemTheme === 'dark') {
+            root.classList.add('dark');
+          }
+        } else if (theme === 'dark') {
+          root.classList.add('dark');
         }
       })();
     </script>

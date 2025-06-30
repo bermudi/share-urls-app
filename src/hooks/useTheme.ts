@@ -7,37 +7,47 @@ export function useTheme() {
     return saved || 'system';
   });
 
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('dark');
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'dark';
+    
+    const saved = localStorage.getItem('theme') as Theme;
+    const currentTheme = saved || 'system';
+    
+    if (currentTheme === 'system') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return currentTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
     
     const updateTheme = () => {
-      // Remove all theme classes first
-      root.classList.remove('light', 'dark');
+      let newResolvedTheme: 'light' | 'dark';
       
       if (theme === 'system') {
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        setResolvedTheme(systemTheme);
-        root.classList.add(systemTheme);
+        newResolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       } else {
-        setResolvedTheme(theme);
-        root.classList.add(theme);
+        newResolvedTheme = theme;
+      }
+      
+      setResolvedTheme(newResolvedTheme);
+      
+      // Apply the theme class
+      if (newResolvedTheme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
       }
     };
 
-    // Update theme immediately
     updateTheme();
-    
-    // Save to localStorage
     localStorage.setItem('theme', theme);
 
-    // Listen for system theme changes if using system theme
     if (theme === 'system') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = () => updateTheme();
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
+      mediaQuery.addEventListener('change', updateTheme);
+      return () => mediaQuery.removeEventListener('change', updateTheme);
     }
   }, [theme]);
 
