@@ -52,6 +52,7 @@ function App() {
   };
 
   const canPublish = links.length > 0;
+  const hasProgress = links.length > 0 || vanityUrl.trim() !== '' || description.trim() !== '';
 
   if (viewMode === 'viewer' && publishedBundle) {
     return (
@@ -68,6 +69,7 @@ function App() {
         theme={theme} 
         onThemeChange={setTheme} 
         onNewBundle={handleNewBundle}
+        hasProgress={hasProgress}
       />
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
