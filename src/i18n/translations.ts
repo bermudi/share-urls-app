@@ -1,4 +1,4 @@
-import type { Language } from '../hooks/useLanguage';
+import type { Language } from '../contexts/LanguageContext';
 
 export interface Translations {
   // Header

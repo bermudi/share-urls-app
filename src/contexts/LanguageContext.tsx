@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type Language = 'en' | 'es' | 'fr' | 'de' | 'pt' | 'ja' | 'ko' | 'zh';
 
@@ -19,6 +19,15 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
   { code: 'ko', name: 'Korean', nativeName: '한국어', flag: '🇰🇷' },
   { code: 'zh', name: 'Chinese', nativeName: '中文', flag: '🇨🇳' },
 ];
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (language: Language) => void;
+  languageOption: LanguageOption;
+  supportedLanguages: LanguageOption[];
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 function isValidLanguage(lang: string): lang is Language {
   return SUPPORTED_LANGUAGES.some(supportedLang => supportedLang.code === lang);
@@ -42,8 +51,12 @@ function getBrowserLanguage(): Language {
   return 'en';
 }
 
-export function useLanguage() {
-  const [language, setLanguage] = useState<Language>(() => {
+interface LanguageProviderProps {
+  children: ReactNode;
+}
+
+export function LanguageProvider({ children }: LanguageProviderProps) {
+  const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'en';
     
     const saved = localStorage.getItem('language');
@@ -66,8 +79,8 @@ export function useLanguage() {
     return browserLang;
   });
 
-  const changeLanguage = (newLanguage: Language) => {
-    console.log('=== LANGUAGE CHANGE ===');
+  const setLanguage = (newLanguage: Language) => {
+    console.log('=== LANGUAGE CONTEXT CHANGE ===');
     console.log('Changing language from', language, 'to', newLanguage);
     
     if (!isValidLanguage(newLanguage)) {
@@ -75,11 +88,11 @@ export function useLanguage() {
       return;
     }
     
-    setLanguage(newLanguage);
+    setLanguageState(newLanguage);
   };
 
   useEffect(() => {
-    console.log('=== LANGUAGE EFFECT ===');
+    console.log('=== LANGUAGE CONTEXT EFFECT ===');
     console.log('Language state changed to:', language);
     
     // Update localStorage
@@ -102,10 +115,24 @@ export function useLanguage() {
     return SUPPORTED_LANGUAGES.find(lang => lang.code === code) || SUPPORTED_LANGUAGES[0];
   };
 
-  return {
+  const value: LanguageContextType = {
     language,
-    setLanguage: changeLanguage,
+    setLanguage,
     languageOption: getLanguageOption(language),
     supportedLanguages: SUPPORTED_LANGUAGES
   };
+
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
 }

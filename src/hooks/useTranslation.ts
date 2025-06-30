@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useLanguage } from './useLanguage';
+import { useLanguage } from '../contexts/LanguageContext';
 import { getTranslations } from '../i18n/translations';
 
 export function useTranslation() {

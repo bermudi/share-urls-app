@@ -5,17 +5,16 @@ import { LinkList } from './components/LinkList';
 import { BundleSettings } from './components/BundleSettings';
 import { PublishButton } from './components/PublishButton';
 import { BundleViewer } from './components/BundleViewer';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { useTheme } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTranslation } from './hooks/useTranslation';
-import { useLanguage } from './hooks/useLanguage';
 import { generateId } from './utils/urlUtils';
 import { supabase } from './lib/supabase';
 import type { LinkItem, Bundle } from './types';
 
-function App() {
+function AppContent() {
   const { theme, setTheme } = useTheme();
-  const { language } = useLanguage(); // Add this to trigger re-renders on language change
   const { t } = useTranslation();
   const [links, setLinks] = useLocalStorage<LinkItem[]>('urllist-links', []);
   const [vanityUrl, setVanityUrl] = useLocalStorage<string>('urllist-vanity', '');
@@ -339,6 +338,14 @@ function App() {
         </div>
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 

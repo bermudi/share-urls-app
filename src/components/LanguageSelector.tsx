@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Languages, Check } from 'lucide-react';
-import { useLanguage } from '../hooks/useLanguage';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../hooks/useTranslation';
-import type { Language } from '../hooks/useLanguage';
+import type { Language } from '../contexts/LanguageContext';
 
 export function LanguageSelector() {
   const { language, setLanguage, supportedLanguages } = useLanguage();
