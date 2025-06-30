@@ -74,7 +74,7 @@ function App() {
       
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
-          {/* Bundle Settings */}
+          {/* Bundle Settings with Publish Section */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <BundleSettings
               vanityUrl={vanityUrl}
@@ -82,6 +82,25 @@ function App() {
               onVanityUrlChange={setVanityUrl}
               onDescriptionChange={setDescription}
             />
+            
+            {/* Publish Section */}
+            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Publish Bundle
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    Make your link bundle available to share
+                  </p>
+                </div>
+                <PublishButton
+                  bundle={{ vanityUrl, description, links }}
+                  canPublish={canPublish}
+                  onPublish={handlePublish}
+                />
+              </div>
+            </div>
           </div>
 
           {/* URL Input */}
@@ -104,25 +123,6 @@ function App() {
               onReorderLinks={handleReorderLinks}
               onRemoveLink={handleRemoveLink}
             />
-          </div>
-
-          {/* Publish Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Publish Bundle
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">
-                  Make your link bundle available to share
-                </p>
-              </div>
-              <PublishButton
-                bundle={{ vanityUrl, description, links }}
-                canPublish={canPublish}
-                onPublish={handlePublish}
-              />
-            </div>
           </div>
 
           {/* Preview Button */}
