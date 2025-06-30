@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ExternalLink, Calendar, ArrowLeft } from 'lucide-react';
 import type { Bundle } from '../types';
 
@@ -8,6 +8,25 @@ interface BundleViewerProps {
 }
 
 export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+
+  const handleImageError = (linkId: string) => {
+    setImageErrors(prev => new Set([...prev, linkId]));
+  };
+
+  const getImageSrc = (link: typeof bundle.links[0]) => {
+    if (imageErrors.has(link.id)) {
+      // Fallback to Google favicon service
+      return `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+    }
+    return link.favicon;
+  };
+
+  const isLargeImage = (link: typeof bundle.links[0]) => {
+    // Check if this looks like an OG image (typically larger)
+    return link.ogImage && link.favicon === link.ogImage && !imageErrors.has(link.id);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -50,21 +69,31 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                 className="group flex items-center space-x-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-teal-500 hover:shadow-md transition-all duration-200"
               >
                 {/* Index */}
-                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-400">
+                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-400 flex-shrink-0">
                   {index + 1}
                 </div>
 
-                {/* Favicon */}
+                {/* Image/Favicon */}
                 <div className="flex-shrink-0">
-                  <img
-                    src={link.favicon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`}
-                    alt=""
-                    className="w-8 h-8 rounded"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
-                    }}
-                  />
+                  {isLargeImage(link) ? (
+                    <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                      <img
+                        src={getImageSrc(link)}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={() => handleImageError(link.id)}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                      <img
+                        src={getImageSrc(link)}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={() => handleImageError(link.id)}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Content */}
@@ -78,7 +107,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                 </div>
 
                 {/* External Link Icon */}
-                <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-teal-500 transition-colors" />
+                <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-teal-500 transition-colors flex-shrink-0" />
               </a>
             ))}
           </div>

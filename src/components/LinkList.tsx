@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GripVertical, ExternalLink, X } from 'lucide-react';
+import { GripVertical, ExternalLink, X, Image } from 'lucide-react';
 import type { LinkItem } from '../types';
 
 interface LinkListProps {
@@ -11,6 +11,7 @@ interface LinkListProps {
 export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps) {
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [dragOverItem, setDragOverItem] = useState<string | null>(null);
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   const handleDragStart = (e: React.DragEvent, linkId: string) => {
     setDraggedItem(linkId);
@@ -50,6 +51,23 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
   const handleDragEnd = () => {
     setDraggedItem(null);
     setDragOverItem(null);
+  };
+
+  const handleImageError = (linkId: string) => {
+    setImageErrors(prev => new Set([...prev, linkId]));
+  };
+
+  const getImageSrc = (link: LinkItem) => {
+    if (imageErrors.has(link.id)) {
+      // Fallback to Google favicon service
+      return `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+    }
+    return link.favicon;
+  };
+
+  const isLargeImage = (link: LinkItem) => {
+    // Check if this looks like an OG image (typically larger)
+    return link.ogImage && link.favicon === link.ogImage && !imageErrors.has(link.id);
   };
 
   if (links.length === 0) {
@@ -92,17 +110,27 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
               <GripVertical className="w-4 h-4" />
             </button>
 
-            {/* Favicon */}
+            {/* Image/Favicon */}
             <div className="flex-shrink-0">
-              <img
-                src={link.favicon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`}
-                alt=""
-                className="w-8 h-8 rounded"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
-                }}
-              />
+              {isLargeImage(link) ? (
+                <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                  <img
+                    src={getImageSrc(link)}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    onError={() => handleImageError(link.id)}
+                  />
+                </div>
+              ) : (
+                <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                  <img
+                    src={getImageSrc(link)}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    onError={() => handleImageError(link.id)}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Content */}

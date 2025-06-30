@@ -4,6 +4,7 @@ export interface LinkItem {
   title: string;
   description: string;
   favicon: string;
+  ogImage?: string; // Optional OG image for richer previews
   addedAt: Date;
 }
 
