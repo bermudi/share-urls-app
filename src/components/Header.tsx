@@ -1,22 +1,18 @@
 import React from 'react';
-import { Plus, Info, FileText, Sun, Moon, Monitor, Check, LogOut, User } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import { Plus, Info, FileText, Sun, Moon, Monitor, Check } from 'lucide-react';
 import type { Theme } from '../types';
 
 interface HeaderProps {
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
   onNewBundle: () => void;
-  onShowAuth: () => void;
   hasProgress?: boolean;
 }
 
-export function Header({ theme, onThemeChange, onNewBundle, onShowAuth, hasProgress = false }: HeaderProps) {
+export function Header({ theme, onThemeChange, onNewBundle, hasProgress = false }: HeaderProps) {
   const [showThemeMenu, setShowThemeMenu] = React.useState(false);
-  const [showUserMenu, setShowUserMenu] = React.useState(false);
   const [showAboutModal, setShowAboutModal] = React.useState(false);
   const [showTermsModal, setShowTermsModal] = React.useState(false);
-  const { user, signOut } = useAuth();
 
   const themeOptions: { value: Theme; label: string; icon: React.ReactNode }[] = [
     { value: 'light', label: 'Light', icon: <Sun className="w-4 h-4" /> },
@@ -24,23 +20,20 @@ export function Header({ theme, onThemeChange, onNewBundle, onShowAuth, hasProgr
     { value: 'system', label: 'System', icon: <Monitor className="w-4 h-4" /> },
   ];
 
-  // Close dropdowns when clicking outside
+  // Close dropdown when clicking outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
       if (!target.closest('[data-theme-selector]')) {
         setShowThemeMenu(false);
       }
-      if (!target.closest('[data-user-menu]')) {
-        setShowUserMenu(false);
-      }
     };
 
-    if (showThemeMenu || showUserMenu) {
+    if (showThemeMenu) {
       document.addEventListener('click', handleClickOutside);
       return () => document.removeEventListener('click', handleClickOutside);
     }
-  }, [showThemeMenu, showUserMenu]);
+  }, [showThemeMenu]);
 
   const handleThemeChange = (newTheme: Theme) => {
     onThemeChange(newTheme);
@@ -60,11 +53,6 @@ export function Header({ theme, onThemeChange, onNewBundle, onShowAuth, hasProgr
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    setShowUserMenu(false);
-  };
-
   return (
     <>
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -72,12 +60,12 @@ export function Header({ theme, onThemeChange, onNewBundle, onShowAuth, hasProgr
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+              <a href="/" className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">url</span>
                 </div>
                 <span className="text-xl font-semibold text-gray-900 dark:text-white">List</span>
-              </div>
+              </a>
             </div>
 
             {/* Navigation */}
@@ -105,79 +93,35 @@ export function Header({ theme, onThemeChange, onNewBundle, onShowAuth, hasProgr
               </button>
             </nav>
 
-            {/* Right side controls */}
-            <div className="flex items-center space-x-4">
-              {/* User Menu */}
-              {user ? (
-                <div className="relative" data-user-menu>
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-2 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <User className="w-4 h-4 text-gray-700 dark:text-gray-300" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300 hidden sm:block">
-                      {user.email?.split('@')[0]}
-                    </span>
-                  </button>
+            {/* Theme Selector */}
+            <div className="relative" data-theme-selector>
+              <button
+                onClick={() => setShowThemeMenu(!showThemeMenu)}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Theme selector"
+              >
+                {theme === 'light' && <Sun className="w-4 h-4 text-gray-700 dark:text-gray-300" />}
+                {theme === 'dark' && <Moon className="w-4 h-4 text-gray-700 dark:text-gray-300" />}
+                {theme === 'system' && <Monitor className="w-4 h-4 text-gray-700 dark:text-gray-300" />}
+              </button>
 
-                  {showUserMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
-                      <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Signed in as</p>
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                          {user.email}
-                        </p>
+              {showThemeMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                  {themeOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => handleThemeChange(option.value)}
+                      className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      <div className="flex items-center space-x-3">
+                        {option.icon}
+                        <span>{option.label}</span>
                       </div>
-                      <button
-                        onClick={handleSignOut}
-                        className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  )}
+                      {theme === option.value && <Check className="w-4 h-4 text-teal-500" />}
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <button
-                  onClick={onShowAuth}
-                  className="flex items-center space-x-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-colors"
-                >
-                  <User className="w-4 h-4" />
-                  <span>Sign In</span>
-                </button>
               )}
-
-              {/* Theme Selector */}
-              <div className="relative" data-theme-selector>
-                <button
-                  onClick={() => setShowThemeMenu(!showThemeMenu)}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                  aria-label="Theme selector"
-                >
-                  {theme === 'light' && <Sun className="w-4 h-4 text-gray-700 dark:text-gray-300" />}
-                  {theme === 'dark' && <Moon className="w-4 h-4 text-gray-700 dark:text-gray-300" />}
-                  {theme === 'system' && <Monitor className="w-4 h-4 text-gray-700 dark:text-gray-300" />}
-                </button>
-
-                {showThemeMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
-                    {themeOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => handleThemeChange(option.value)}
-                        className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <div className="flex items-center space-x-3">
-                          {option.icon}
-                          <span>{option.label}</span>
-                        </div>
-                        {theme === option.value && <Check className="w-4 h-4 text-teal-500" />}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         </div>
@@ -204,6 +148,9 @@ export function Header({ theme, onThemeChange, onNewBundle, onShowAuth, hasProgr
               </p>
               <p>
                 Perfect for sharing collections of resources, articles, tools, or any group of links with friends, colleagues, or your audience.
+              </p>
+              <p>
+                No sign-up required - just create your bundle and share it instantly!
               </p>
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -256,7 +203,7 @@ export function Header({ theme, onThemeChange, onNewBundle, onShowAuth, hasProgr
               
               <section>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">4. Privacy</h3>
-                <p>We respect your privacy. URL bundles are stored securely and are only accessible to you unless published publicly.</p>
+                <p>We respect your privacy. Published bundles are publicly accessible via their share links. Unpublished bundles remain local to your browser.</p>
               </section>
               
               <section>

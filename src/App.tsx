@@ -1,26 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { UrlInput } from './components/UrlInput';
 import { LinkList } from './components/LinkList';
 import { BundleSettings } from './components/BundleSettings';
 import { PublishButton } from './components/PublishButton';
 import { BundleViewer } from './components/BundleViewer';
-import { AuthModal } from './components/AuthModal';
 import { useTheme } from './hooks/useTheme';
-import { useAuth } from './hooks/useAuth';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { generateId } from './utils/urlUtils';
+import { supabase } from './lib/supabase';
 import type { LinkItem, Bundle } from './types';
 
 function App() {
   const { theme, setTheme } = useTheme();
-  const { user, loading: authLoading } = useAuth();
   const [links, setLinks] = useLocalStorage<LinkItem[]>('urllist-links', []);
   const [vanityUrl, setVanityUrl] = useLocalStorage<string>('urllist-vanity', '');
   const [description, setDescription] = useLocalStorage<string>('urllist-description', '');
   const [publishedBundle, setPublishedBundle] = useState<Bundle | null>(null);
   const [viewMode, setViewMode] = useState<'editor' | 'viewer'>('editor');
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Check if we're viewing a specific bundle from URL
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path !== '/') {
+      const bundleId = path.substring(1); // Remove leading slash
+      loadPublicBundle(bundleId);
+    }
+  }, []);
+
+  const loadPublicBundle = async (bundleId: string) => {
+    setIsLoading(true);
+    try {
+      // Try to load by vanity URL first, then by ID
+      let { data: bundle, error } = await supabase
+        .from('bundles')
+        .select(`
+          *,
+          bundle_links (*)
+        `)
+        .eq('vanity_url', bundleId)
+        .eq('published', true)
+        .single();
+
+      if (error && error.code === 'PGRST116') {
+        // Not found by vanity URL, try by ID
+        const { data: bundleById, error: errorById } = await supabase
+          .from('bundles')
+          .select(`
+            *,
+            bundle_links (*)
+          `)
+          .eq('id', bundleId)
+          .eq('published', true)
+          .single();
+
+        bundle = bundleById;
+        error = errorById;
+      }
+
+      if (error || !bundle) {
+        console.error('Bundle not found:', error);
+        return;
+      }
+
+      // Convert to our Bundle type
+      const loadedBundle: Bundle = {
+        id: bundle.id,
+        vanityUrl: bundle.vanity_url || undefined,
+        description: bundle.description || undefined,
+        links: bundle.bundle_links
+          .sort((a, b) => a.position - b.position)
+          .map(link => ({
+            id: link.id,
+            url: link.url,
+            title: link.title,
+            description: link.description,
+            favicon: link.favicon,
+            ogImage: link.og_image || undefined,
+            addedAt: new Date(link.created_at)
+          })),
+        createdAt: new Date(bundle.created_at),
+        published: bundle.published
+      };
+
+      setPublishedBundle(loadedBundle);
+      setViewMode('viewer');
+    } catch (err) {
+      console.error('Error loading bundle:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAddLink = (link: LinkItem) => {
     setLinks(prevLinks => [...prevLinks, link]);
@@ -40,37 +111,76 @@ function App() {
     setDescription('');
     setPublishedBundle(null);
     setViewMode('editor');
+    // Clear URL
+    window.history.pushState({}, '', '/');
   };
 
-  const handlePublish = (shareUrl: string) => {
-    if (!user) {
-      setShowAuthModal(true);
-      return;
-    }
+  const handlePublish = async (shareUrl: string) => {
+    try {
+      // Create bundle in database
+      const bundleId = generateId();
+      const { data: bundle, error: bundleError } = await supabase
+        .from('bundles')
+        .insert({
+          id: bundleId,
+          vanity_url: vanityUrl || null,
+          description: description || null,
+          published: true
+        })
+        .select()
+        .single();
 
-    const bundle: Bundle = {
-      id: generateId(),
-      vanityUrl: vanityUrl || undefined,
-      description: description || undefined,
-      links: [...links],
-      createdAt: new Date(),
-      published: true
-    };
-    
-    setPublishedBundle(bundle);
+      if (bundleError) {
+        console.error('Error creating bundle:', bundleError);
+        return;
+      }
+
+      // Create bundle links
+      const linksToInsert = links.map((link, index) => ({
+        bundle_id: bundleId,
+        url: link.url,
+        title: link.title,
+        description: link.description,
+        favicon: link.favicon,
+        og_image: link.ogImage || null,
+        position: index
+      }));
+
+      const { error: linksError } = await supabase
+        .from('bundle_links')
+        .insert(linksToInsert);
+
+      if (linksError) {
+        console.error('Error creating links:', linksError);
+        return;
+      }
+
+      const publishedBundleData: Bundle = {
+        id: bundleId,
+        vanityUrl: vanityUrl || undefined,
+        description: description || undefined,
+        links: [...links],
+        createdAt: new Date(),
+        published: true
+      };
+      
+      setPublishedBundle(publishedBundleData);
+    } catch (err) {
+      console.error('Error publishing bundle:', err);
+    }
   };
 
   const canPublish = links.length > 0;
   const hasProgress = links.length > 0 || vanityUrl.trim() !== '' || description.trim() !== '';
 
-  if (authLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center mx-auto mb-4">
             <span className="text-white font-bold text-sm">url</span>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading bundle...</p>
         </div>
       </div>
     );
@@ -91,7 +201,6 @@ function App() {
         theme={theme} 
         onThemeChange={setTheme} 
         onNewBundle={handleNewBundle}
-        onShowAuth={() => setShowAuthModal(true)}
         hasProgress={hasProgress}
       />
       
@@ -114,7 +223,7 @@ function App() {
                     Publish Bundle
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    {user ? 'Make your link bundle available to share' : 'Sign in to publish and share your bundle'}
+                    Make your link bundle available to share with anyone
                   </p>
                 </div>
                 <PublishButton
@@ -161,11 +270,6 @@ function App() {
           )}
         </div>
       </main>
-
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
-      />
     </div>
   );
 }

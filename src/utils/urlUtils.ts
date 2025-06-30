@@ -16,87 +16,36 @@ export function normalizeUrl(url: string): string {
   return url;
 }
 
-async function fetchPageMetadata(url: string): Promise<{
-  title?: string;
-  description?: string;
-  ogImage?: string;
-  favicon?: string;
-}> {
-  try {
-    // Use a CORS proxy to fetch the page content
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch page');
-    }
-    
-    const data = await response.json();
-    const html = data.contents;
-    
-    // Create a temporary DOM parser
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    
-    // Extract metadata
-    const title = 
-      doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
-      doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content') ||
-      doc.querySelector('title')?.textContent ||
-      '';
-    
-    const description = 
-      doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
-      doc.querySelector('meta[name="twitter:description"]')?.getAttribute('content') ||
-      doc.querySelector('meta[name="description"]')?.getAttribute('content') ||
-      '';
-    
-    // Get OG image
-    const ogImage = 
-      doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ||
-      doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content') ||
-      '';
-    
-    // Get favicon
-    const favicon = 
-      doc.querySelector('link[rel="icon"]')?.getAttribute('href') ||
-      doc.querySelector('link[rel="shortcut icon"]')?.getAttribute('href') ||
-      doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') ||
-      '';
-    
-    return {
-      title: title.trim(),
-      description: description.trim(),
-      ogImage: ogImage ? new URL(ogImage, url).href : '',
-      favicon: favicon ? new URL(favicon, url).href : ''
-    };
-  } catch (error) {
-    console.warn('Failed to fetch page metadata:', error);
-    return {};
-  }
-}
-
 export async function fetchUrlMetadata(url: string): Promise<Partial<LinkItem>> {
   const normalizedUrl = normalizeUrl(url);
   
   try {
-    const domain = new URL(normalizedUrl).hostname;
+    // Use our Supabase edge function to fetch metadata
+    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-metadata`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ url: normalizedUrl }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const metadata = await response.json();
     
-    // Try to fetch real metadata first
-    const metadata = await fetchPageMetadata(normalizedUrl);
-    
-    // Fallback to Google's favicon service if no favicon found
-    const fallbackFavicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
-    
-    // Use OG image if available, otherwise use favicon
-    const imageUrl = metadata.ogImage || metadata.favicon || fallbackFavicon;
-    
+    if (metadata.error) {
+      throw new Error(metadata.error);
+    }
+
     return {
-      url: normalizedUrl,
-      title: metadata.title || domain,
-      description: metadata.description || 'Web page',
-      favicon: imageUrl,
-      ogImage: metadata.ogImage // Store OG image separately for potential future use
+      url: metadata.url,
+      title: metadata.title,
+      description: metadata.description,
+      favicon: metadata.favicon,
+      ogImage: metadata.ogImage
     };
   } catch (error) {
     console.warn('Failed to fetch metadata for:', url, error);
@@ -201,9 +150,9 @@ export function generateId(): string {
 
 export function generateShortUrl(vanityUrl?: string): string {
   if (vanityUrl) {
-    return `https://urllist.app/${vanityUrl}`;
+    return `${window.location.origin}/${vanityUrl}`;
   }
-  return `https://urllist.app/${generateId()}`;
+  return `${window.location.origin}/${generateId()}`;
 }
 
 export function isValidVanityUrl(vanityUrl: string): boolean {
