@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UrlList - Bundle and Share Multiple URLs</title>
+    <meta name="description" content="Easily bundle and share multiple URLs through a single, shareable link. Create collections of links with custom descriptions and vanity URLs." />
+    <script>
+      // Prevent flash of unstyled content by setting theme immediately
+      (function() {
+        const theme = localStorage.getItem('theme') || 'dark';
+        if (theme === 'system') {
+          const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.classList.add(systemTheme);
+        } else {
+          document.documentElement.classList.add(theme);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
