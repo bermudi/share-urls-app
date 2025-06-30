@@ -8,12 +8,14 @@ import { BundleViewer } from './components/BundleViewer';
 import { useTheme } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTranslation } from './hooks/useTranslation';
+import { useLanguage } from './hooks/useLanguage';
 import { generateId } from './utils/urlUtils';
 import { supabase } from './lib/supabase';
 import type { LinkItem, Bundle } from './types';
 
 function App() {
   const { theme, setTheme } = useTheme();
+  const { language } = useLanguage(); // Add this to trigger re-renders on language change
   const { t } = useTranslation();
   const [links, setLinks] = useLocalStorage<LinkItem[]>('urllist-links', []);
   const [vanityUrl, setVanityUrl] = useLocalStorage<string>('urllist-vanity', '');
