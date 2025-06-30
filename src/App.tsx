@@ -5,18 +5,22 @@ import { LinkList } from './components/LinkList';
 import { BundleSettings } from './components/BundleSettings';
 import { PublishButton } from './components/PublishButton';
 import { BundleViewer } from './components/BundleViewer';
+import { AuthModal } from './components/AuthModal';
 import { useTheme } from './hooks/useTheme';
+import { useAuth } from './hooks/useAuth';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { generateId } from './utils/urlUtils';
 import type { LinkItem, Bundle } from './types';
 
 function App() {
   const { theme, setTheme } = useTheme();
+  const { user, loading: authLoading } = useAuth();
   const [links, setLinks] = useLocalStorage<LinkItem[]>('urllist-links', []);
   const [vanityUrl, setVanityUrl] = useLocalStorage<string>('urllist-vanity', '');
   const [description, setDescription] = useLocalStorage<string>('urllist-description', '');
   const [publishedBundle, setPublishedBundle] = useState<Bundle | null>(null);
   const [viewMode, setViewMode] = useState<'editor' | 'viewer'>('editor');
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleAddLink = (link: LinkItem) => {
     setLinks(prevLinks => [...prevLinks, link]);
@@ -39,6 +43,11 @@ function App() {
   };
 
   const handlePublish = (shareUrl: string) => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
     const bundle: Bundle = {
       id: generateId(),
       vanityUrl: vanityUrl || undefined,
@@ -53,6 +62,19 @@ function App() {
 
   const canPublish = links.length > 0;
   const hasProgress = links.length > 0 || vanityUrl.trim() !== '' || description.trim() !== '';
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-bold text-sm">url</span>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (viewMode === 'viewer' && publishedBundle) {
     return (
@@ -69,6 +91,7 @@ function App() {
         theme={theme} 
         onThemeChange={setTheme} 
         onNewBundle={handleNewBundle}
+        onShowAuth={() => setShowAuthModal(true)}
         hasProgress={hasProgress}
       />
       
@@ -91,7 +114,7 @@ function App() {
                     Publish Bundle
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    Make your link bundle available to share
+                    {user ? 'Make your link bundle available to share' : 'Sign in to publish and share your bundle'}
                   </p>
                 </div>
                 <PublishButton
@@ -138,6 +161,11 @@ function App() {
           )}
         </div>
       </main>
+
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+      />
     </div>
   );
 }
