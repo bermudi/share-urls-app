@@ -32,6 +32,11 @@ export function Header({ theme, onThemeChange, onNewBundle }: HeaderProps) {
     }
   }, [showThemeMenu]);
 
+  const handleThemeChange = (newTheme: Theme) => {
+    onThemeChange(newTheme);
+    setShowThemeMenu(false);
+  };
+
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,10 +87,7 @@ export function Header({ theme, onThemeChange, onNewBundle }: HeaderProps) {
                 {themeOptions.map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => {
-                      onThemeChange(option.value);
-                      setShowThemeMenu(false);
-                    }}
+                    onClick={() => handleThemeChange(option.value)}
                     className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     <div className="flex items-center space-x-3">

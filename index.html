@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -9,12 +9,17 @@
     <script>
       // Prevent flash of unstyled content by setting theme immediately
       (function() {
-        const theme = localStorage.getItem('theme') || 'dark';
+        const theme = localStorage.getItem('theme') || 'system';
+        const root = document.documentElement;
+        
+        // Remove any existing theme classes
+        root.classList.remove('light', 'dark');
+        
         if (theme === 'system') {
           const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          document.documentElement.classList.add(systemTheme);
+          root.classList.add(systemTheme);
         } else {
-          document.documentElement.classList.add(theme);
+          root.classList.add(theme);
         }
       })();
     </script>
