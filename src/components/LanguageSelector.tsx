@@ -25,6 +25,7 @@ export function LanguageSelector() {
   }, [showLanguageMenu]);
 
   const handleLanguageChange = (newLanguage: Language) => {
+    console.log('Language selector: changing to', newLanguage);
     setLanguage(newLanguage);
     setShowLanguageMenu(false);
   };

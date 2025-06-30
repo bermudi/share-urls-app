@@ -290,7 +290,7 @@ const translations: Record<Language, Translations> = {
       selectLanguage: 'Seleccionar idioma',
     },
   },
-  // Placeholder for other languages - will be implemented later
+  // Fallback to English for unimplemented languages
   fr: {} as Translations,
   de: {} as Translations,
   pt: {} as Translations,
@@ -300,7 +300,15 @@ const translations: Record<Language, Translations> = {
 };
 
 export function getTranslations(language: Language): Translations {
-  return translations[language] || translations.en;
+  const translation = translations[language];
+  
+  // If translation doesn't exist or is empty, fall back to English
+  if (!translation || Object.keys(translation).length === 0) {
+    console.log(`Translation for ${language} not found, falling back to English`);
+    return translations.en;
+  }
+  
+  return translation;
 }
 
 export { translations };

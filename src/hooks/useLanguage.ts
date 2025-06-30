@@ -21,26 +21,47 @@ export const SUPPORTED_LANGUAGES: LanguageOption[] = [
 ];
 
 function getBrowserLanguage(): Language {
+  if (typeof window === 'undefined') return 'en';
+  
   const browserLang = navigator.language.toLowerCase();
+  console.log('Browser language detected:', browserLang);
   
   // Check for exact matches first
   for (const lang of SUPPORTED_LANGUAGES) {
     if (browserLang === lang.code || browserLang.startsWith(`${lang.code}-`)) {
+      console.log('Matched browser language to:', lang.code);
       return lang.code;
     }
   }
   
+  console.log('No match found, defaulting to English');
   // Fallback to English
   return 'en';
 }
 
 export function useLanguage() {
   const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window === 'undefined') return 'en';
+    
     const saved = localStorage.getItem('language') as Language;
-    return saved || getBrowserLanguage();
+    console.log('Saved language from localStorage:', saved);
+    
+    if (saved && SUPPORTED_LANGUAGES.some(lang => lang.code === saved)) {
+      return saved;
+    }
+    
+    const browserLang = getBrowserLanguage();
+    console.log('Using browser language:', browserLang);
+    return browserLang;
   });
 
+  const changeLanguage = (newLanguage: Language) => {
+    console.log('Changing language from', language, 'to', newLanguage);
+    setLanguage(newLanguage);
+  };
+
   useEffect(() => {
+    console.log('Language changed to:', language);
     localStorage.setItem('language', language);
     document.documentElement.lang = language;
   }, [language]);
@@ -51,7 +72,7 @@ export function useLanguage() {
 
   return {
     language,
-    setLanguage,
+    setLanguage: changeLanguage,
     languageOption: getLanguageOption(language),
     supportedLanguages: SUPPORTED_LANGUAGES
   };
