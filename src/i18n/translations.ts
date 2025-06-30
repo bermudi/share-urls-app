@@ -300,14 +300,18 @@ const translations: Record<Language, Translations> = {
 };
 
 export function getTranslations(language: Language): Translations {
+  console.log('=== GET TRANSLATIONS ===');
+  console.log('Requested language:', language);
+  
   const translation = translations[language];
   
   // If translation doesn't exist or is empty, fall back to English
   if (!translation || Object.keys(translation).length === 0) {
-    console.log(`Translation for ${language} not found, falling back to English`);
+    console.log(`Translation for ${language} not found or empty, falling back to English`);
     return translations.en;
   }
   
+  console.log(`Using translations for: ${language}`);
   return translation;
 }
 
