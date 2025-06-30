@@ -19,6 +19,7 @@ function App() {
   const [publishedBundle, setPublishedBundle] = useState<Bundle | null>(null);
   const [viewMode, setViewMode] = useState<'editor' | 'viewer'>('editor');
   const [isLoading, setIsLoading] = useState(false);
+  const [bundleNotFound, setBundleNotFound] = useState(false);
 
   // Check if we're viewing a specific bundle from URL
   useEffect(() => {
@@ -31,7 +32,11 @@ function App() {
 
   const loadPublicBundle = async (bundleId: string) => {
     setIsLoading(true);
+    setBundleNotFound(false);
+    
     try {
+      console.log('Loading bundle:', bundleId);
+      
       // Try to load by vanity URL first, then by ID
       let { data: bundle, error } = await supabase
         .from('bundles')
@@ -45,6 +50,7 @@ function App() {
 
       if (error && error.code === 'PGRST116') {
         // Not found by vanity URL, try by ID
+        console.log('Not found by vanity URL, trying by ID');
         const { data: bundleById, error: errorById } = await supabase
           .from('bundles')
           .select(`
@@ -61,8 +67,12 @@ function App() {
 
       if (error || !bundle) {
         console.error('Bundle not found:', error);
+        setBundleNotFound(true);
+        setIsLoading(false);
         return;
       }
+
+      console.log('Bundle loaded:', bundle);
 
       // Convert to our Bundle type
       const loadedBundle: Bundle = {
@@ -70,13 +80,13 @@ function App() {
         vanityUrl: bundle.vanity_url || undefined,
         description: bundle.description || undefined,
         links: bundle.bundle_links
-          .sort((a, b) => a.position - b.position)
-          .map(link => ({
+          .sort((a: any, b: any) => a.position - b.position)
+          .map((link: any) => ({
             id: link.id,
             url: link.url,
             title: link.title,
-            description: link.description,
-            favicon: link.favicon,
+            description: link.description || '',
+            favicon: link.favicon || '',
             ogImage: link.og_image || undefined,
             addedAt: new Date(link.created_at)
           })),
@@ -88,6 +98,7 @@ function App() {
       setViewMode('viewer');
     } catch (err) {
       console.error('Error loading bundle:', err);
+      setBundleNotFound(true);
     } finally {
       setIsLoading(false);
     }
@@ -111,12 +122,15 @@ function App() {
     setDescription('');
     setPublishedBundle(null);
     setViewMode('editor');
+    setBundleNotFound(false);
     // Clear URL
     window.history.pushState({}, '', '/');
   };
 
   const handlePublish = async (shareUrl: string) => {
     try {
+      console.log('Publishing bundle...');
+      
       // Create bundle in database
       const bundleId = generateId();
       const { data: bundle, error: bundleError } = await supabase
@@ -132,16 +146,19 @@ function App() {
 
       if (bundleError) {
         console.error('Error creating bundle:', bundleError);
+        alert('Failed to publish bundle. Please try again.');
         return;
       }
+
+      console.log('Bundle created:', bundle);
 
       // Create bundle links
       const linksToInsert = links.map((link, index) => ({
         bundle_id: bundleId,
         url: link.url,
         title: link.title,
-        description: link.description,
-        favicon: link.favicon,
+        description: link.description || '',
+        favicon: link.favicon || '',
         og_image: link.ogImage || null,
         position: index
       }));
@@ -152,8 +169,11 @@ function App() {
 
       if (linksError) {
         console.error('Error creating links:', linksError);
+        alert('Failed to publish bundle links. Please try again.');
         return;
       }
+
+      console.log('Links created successfully');
 
       const publishedBundleData: Bundle = {
         id: bundleId,
@@ -165,20 +185,27 @@ function App() {
       };
       
       setPublishedBundle(publishedBundleData);
+      
+      // Update URL to the published bundle
+      const urlPath = vanityUrl || bundleId;
+      window.history.pushState({}, '', `/${urlPath}`);
+      
     } catch (err) {
       console.error('Error publishing bundle:', err);
+      alert('Failed to publish bundle. Please try again.');
     }
   };
 
   const canPublish = links.length > 0;
   const hasProgress = links.length > 0 || vanityUrl.trim() !== '' || description.trim() !== '';
 
+  // Show loading state
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-sm">url</span>
+          <div className="w-16 h-16 bg-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-bold text-xl">url</span>
           </div>
           <p className="text-gray-600 dark:text-gray-400">Loading bundle...</p>
         </div>
@@ -186,15 +213,42 @@ function App() {
     );
   }
 
+  // Show bundle not found
+  if (bundleNotFound) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="w-16 h-16 bg-gray-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-bold text-xl">404</span>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Bundle Not Found
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            The bundle you're looking for doesn't exist or hasn't been published yet.
+          </p>
+          <button
+            onClick={handleNewBundle}
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg transition-colors"
+          >
+            <span>Create New Bundle</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show bundle viewer if we're viewing a published bundle
   if (viewMode === 'viewer' && publishedBundle) {
     return (
       <BundleViewer 
         bundle={publishedBundle} 
-        onBack={() => setViewMode('editor')} 
+        onBack={handleNewBundle} 
       />
     );
   }
 
+  // Show main editor interface
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Header 

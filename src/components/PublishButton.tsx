@@ -10,15 +10,23 @@ interface PublishButtonProps {
 }
 
 export function PublishButton({ bundle, canPublish, onPublish }: PublishButtonProps) {
+  const [isPublishing, setIsPublishing] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  const handlePublish = () => {
-    const url = generateShortUrl(bundle.vanityUrl);
-    setShareUrl(url);
-    setIsPublished(true);
-    onPublish(url);
+  const handlePublish = async () => {
+    setIsPublishing(true);
+    try {
+      const url = generateShortUrl(bundle.vanityUrl);
+      setShareUrl(url);
+      await onPublish(url);
+      setIsPublished(true);
+    } catch (error) {
+      console.error('Failed to publish:', error);
+    } finally {
+      setIsPublishing(false);
+    }
   };
 
   const handleCopy = async () => {
@@ -39,11 +47,11 @@ export function PublishButton({ bundle, canPublish, onPublish }: PublishButtonPr
     return (
       <button
         onClick={handlePublish}
-        disabled={!canPublish}
+        disabled={!canPublish || isPublishing}
         className="inline-flex items-center space-x-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors disabled:cursor-not-allowed"
       >
         <Share2 className="w-4 h-4" />
-        <span>Publish</span>
+        <span>{isPublishing ? 'Publishing...' : 'Publish'}</span>
       </button>
     );
   }
