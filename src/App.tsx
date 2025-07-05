@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { UrlInput } from './components/UrlInput';
 import { LinkList } from './components/LinkList';
@@ -9,7 +9,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { useTheme } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTranslation } from './hooks/useTranslation';
-import { generateId } from './utils/urlUtils';
+import { generateFriendlyId } from './utils/urlUtils';
 import { supabase } from './lib/supabase';
 import type { LinkItem, Bundle } from './types';
 
@@ -139,88 +139,140 @@ function AppContent() {
     setTimeout(() => setResetPublishButton(false), 100);
   };
 
-  const handlePublish = async (shareUrl: string) => {
+  const handlePublish = async (shareUrl: string): Promise<string> => {
+    const maxRetries = 3;
+    let attempt = 0;
+    let lastError: Error | null = null;
+    
+    // Extract the vanity URL from the share URL (remove the domain part)
+    let tempVanityUrl: string;
+    
     try {
-      console.log('Publishing bundle...');
-      console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
-      console.log('Supabase Key present:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
-      
-      // Create bundle in database
-      const bundleId = generateId();
-      console.log('Generated bundle ID:', bundleId);
-      
-      const bundleData = {
-        id: bundleId,
-        vanity_url: vanityUrl || null,
-        description: description || null,
-        published: true,
-        user_id: null // Explicitly set to null for anonymous users
-      };
-      
-      console.log('Bundle data to insert:', bundleData);
-      
-      const { data: bundle, error: bundleError } = await supabase
-        .from('bundles')
-        .insert(bundleData)
-        .select()
-        .single();
-
-      if (bundleError) {
-        console.error('Error creating bundle:', bundleError);
-        throw new Error(`Failed to create bundle: ${bundleError.message}`);
-      }
-
-      console.log('Bundle created:', bundle);
-
-      // Create bundle links
-      const linksToInsert = links.map((link, index) => ({
-        bundle_id: bundleId,
-        url: link.url,
-        title: link.title,
-        description: link.description || '',
-        favicon: link.favicon || '',
-        og_image: link.ogImage || null,
-        position: index
-      }));
-
-      console.log('Links to insert:', linksToInsert);
-
-      const { error: linksError } = await supabase
-        .from('bundle_links')
-        .insert(linksToInsert);
-
-      if (linksError) {
-        console.error('Error creating links:', linksError);
-        throw new Error(`Failed to create links: ${linksError.message}`);
-      }
-
-      console.log('Links created successfully');
-
-      const publishedBundleData: Bundle = {
-        id: bundleId,
-        vanityUrl: vanityUrl || undefined,
-        description: description || undefined,
-        links: [...links],
-        createdAt: new Date(),
-        published: true
-      };
-      
-      setPublishedBundle(publishedBundleData);
-      
-      // Clear local storage after successful publish
-      setLinks([]);
-      setVanityUrl('');
-      setDescription('');
-      
-      // Update URL to the published bundle
-      const urlPath = vanityUrl || bundleId;
-      window.history.pushState({}, '', `/${urlPath}`);
-      
-    } catch (err) {
-      console.error('Error publishing bundle:', err);
-      alert(`Failed to publish bundle: ${err instanceof Error ? err.message : 'Unknown error'}`);
-      throw err; // Re-throw to be caught by PublishButton
+      const url = new URL(shareUrl);
+      const pathParts = url.pathname.split('/').filter(Boolean);
+      tempVanityUrl = pathParts[0] || generateFriendlyId();
+    } catch (e) {
+      // If shareUrl is not a valid URL, use the existing vanityUrl or generate a new one
+      tempVanityUrl = vanityUrl || generateFriendlyId();
     }
+    
+    console.log('Publishing with vanity URL:', tempVanityUrl);
+    
+    while (attempt < maxRetries) {
+      try {
+        console.log('Publishing bundle... (attempt', attempt + 1, ')');
+        console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+        console.log('Supabase Key present:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+        
+        // For the first attempt, use the provided vanity URL
+        // For retries, generate a new one if there was a conflict
+        const finalVanityUrl = attempt === 0 ? tempVanityUrl : generateFriendlyId();
+        console.log('Attempting to save with vanity URL:', finalVanityUrl);
+        
+        const bundleData = {
+          vanity_url: finalVanityUrl,
+          description: description || null,
+          published: true,
+          user_id: null, // Explicitly set to null for anonymous users
+          created_at: new Date().toISOString() // Make sure we have a creation timestamp
+        };
+        
+        console.log('Bundle data to insert:', bundleData);
+        
+        const { data: bundle, error: bundleError } = await supabase
+          .from('bundles')
+          .insert(bundleData)
+          .select()
+          .single();
+
+        if (bundleError) {
+          // Check if it's a unique constraint violation on vanity_url
+          if (bundleError.code === '23505' && bundleError.message.includes('vanity_url')) {
+            console.log('Vanity URL collision, retrying with new ID...');
+            attempt++;
+            if (attempt >= maxRetries) {
+              throw new Error('Failed to generate unique vanity URL after multiple attempts');
+            }
+            continue; // Retry with a new friendly ID
+          }
+          
+          console.error('Error creating bundle:', bundleError);
+          throw new Error(`Failed to create bundle: ${bundleError.message}`);
+        }
+
+        console.log('Bundle created:', bundle);
+
+        // Create bundle links
+        const linksToInsert = links.map((link, index) => ({
+          bundle_id: bundle.id, // Use the UUID generated by the database
+          url: link.url,
+          title: link.title,
+          description: link.description || '',
+          favicon: link.favicon || '',
+          og_image: link.ogImage || null,
+          position: index
+        }));
+
+        console.log('Links to insert:', linksToInsert);
+
+        const { error: linksError } = await supabase
+          .from('bundle_links')
+          .insert(linksToInsert);
+
+        if (linksError) {
+          console.error('Error creating links:', linksError);
+          throw new Error(`Failed to create links: ${linksError.message}`);
+        }
+
+        console.log('Links created successfully');
+
+        // Create the published bundle data with the final URL from the server
+        const publishedBundleData: Bundle = {
+          id: bundle.id, // Use the actual UUID from the database
+          vanityUrl: finalVanityUrl, // This comes from the server response
+          description: description || undefined,
+          links: [...links],
+          createdAt: new Date(bundle.created_at || bundleData.created_at),
+          published: true
+        };
+        
+        console.log('Bundle published successfully:', publishedBundleData);
+        
+        setPublishedBundle(publishedBundleData);
+        
+        // Clear local storage after successful publish
+        setLinks([]);
+        setVanityUrl('');
+        setDescription('');
+        
+        // Build the final URL
+        const finalUrl = `${window.location.origin}/${finalVanityUrl}`;
+        
+        // Update the browser URL
+        window.history.pushState({}, '', `/${finalVanityUrl}`);
+        
+        // Return the final URL to be used in the success message
+        return finalUrl;
+        
+        // Success - break out of retry loop
+        break;
+        
+      } catch (err) {
+        console.error('Error publishing bundle:', err);
+        if (attempt >= maxRetries - 1) {
+          alert(`Failed to publish bundle: ${err instanceof Error ? err.message : 'Unknown error'}`);
+          // Return an empty string as a fallback (shouldn't happen as we throw an error)
+          return '';
+        }
+        attempt++;
+        lastError = err instanceof Error ? err : new Error(String(err));
+      }
+    }
+    
+    // If we get here, all retries failed
+    const errorMessage = lastError ? lastError.message : 'Unknown error';
+    alert(`Failed to publish bundle after ${maxRetries} attempts: ${errorMessage}`);
+    return ''; // Return empty string as a fallback
   };
 
   const canPublish = links.length > 0;

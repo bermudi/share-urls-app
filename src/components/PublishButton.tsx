@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Share2, Copy, Check, ExternalLink } from 'lucide-react';
 import { generateShortUrl } from '../utils/urlUtils';
 import { useTranslation } from '../hooks/useTranslation';
@@ -7,7 +7,7 @@ import type { Bundle } from '../types';
 interface PublishButtonProps {
   bundle: Partial<Bundle>;
   canPublish: boolean;
-  onPublish: (shareUrl: string) => void;
+  onPublish: (shareUrl: string) => Promise<string>;
   reset?: boolean;
 }
 
@@ -28,14 +28,33 @@ export function PublishButton({ bundle, canPublish, onPublish, reset }: PublishB
   }, [reset]);
 
   const handlePublish = async () => {
+    if (!bundle.vanityUrl && !bundle.links?.length) {
+      console.error('Cannot publish: No links in bundle');
+      return;
+    }
+
     setIsPublishing(true);
     try {
-      const url = generateShortUrl(bundle.vanityUrl);
-      setShareUrl(url);
-      await onPublish(url);
+      // Generate a temporary URL for immediate feedback
+      const tempUrl = generateShortUrl(bundle.vanityUrl || '');
+      console.log('Temporary URL for UI:', tempUrl);
+      setShareUrl(tempUrl);
+      
+      // Call onPublish to handle the publishing and get the final URL
+      const finalUrl = await onPublish(tempUrl);
+      
+      if (!finalUrl) {
+        throw new Error('Failed to get final URL from server');
+      }
+      
+      console.log('Final published URL:', finalUrl);
+      setShareUrl(finalUrl);
       setIsPublished(true);
     } catch (error) {
       console.error('Failed to publish:', error);
+      // Show error to user
+      alert(`Failed to publish: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setShareUrl('');
     } finally {
       setIsPublishing(false);
     }

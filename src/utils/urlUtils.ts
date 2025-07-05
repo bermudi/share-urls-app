@@ -62,8 +62,8 @@ export async function fetchUrlMetadata(url: string): Promise<Partial<LinkItem>> 
           .replace(/&gt;/g, '>')
           .replace(/&amp;/g, '&')
           .replace(/&nbsp;/g, ' ')
-          .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(parseInt(dec)))
-          .replace(/&#x([0-9a-f]+);/gi, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+          .replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(parseInt(dec)))
+          .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
       }
     };
 
@@ -171,8 +171,35 @@ function getDomainSpecificMetadata(domain: string): { title: string; description
   };
 }
 
+// Word lists for generating friendly URLs
+const adjectives = [
+  'amazing', 'awesome', 'brilliant', 'creative', 'dynamic', 'elegant', 'fantastic', 'gorgeous',
+  'incredible', 'inspiring', 'magical', 'outstanding', 'perfect', 'radiant', 'spectacular', 'stunning',
+  'wonderful', 'bright', 'clever', 'cool', 'epic', 'fresh', 'great', 'happy', 'lovely', 'nice',
+  'smart', 'super', 'swift', 'vivid', 'bold', 'calm', 'cozy', 'cute', 'fair', 'fine', 'fun',
+  'good', 'kind', 'neat', 'pure', 'rich', 'safe', 'warm', 'wise', 'blue', 'gold', 'pink', 'red'
+];
+
+const nouns = [
+  'links', 'bundle', 'collection', 'list', 'pack', 'set', 'group', 'hub', 'vault', 'box',
+  'deck', 'stack', 'pile', 'batch', 'cluster', 'suite', 'kit', 'mix', 'blend', 'combo',
+  'galaxy', 'universe', 'world', 'space', 'zone', 'realm', 'place', 'spot', 'corner', 'nook',
+  'garden', 'forest', 'ocean', 'river', 'mountain', 'valley', 'bridge', 'path', 'road', 'trail',
+  'treasure', 'gem', 'pearl', 'crystal', 'diamond', 'star', 'moon', 'sun', 'cloud', 'rainbow'
+];
+
+export function generateFriendlyId(): string {
+  const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  // Use timestamp + random for better uniqueness
+  const timestamp = Date.now().toString().slice(-4); // Last 4 digits of timestamp
+  const random = Math.floor(Math.random() * 99) + 1;
+  
+  return `${adjective}-${noun}-${timestamp}${random}`;
+}
+
 export function generateId(): string {
-  // Generate a proper UUID v4
+  // Generate a proper UUID v4 (kept for backward compatibility)
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = Math.random() * 16 | 0;
     const v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -181,12 +208,52 @@ export function generateId(): string {
 }
 
 export function generateShortUrl(vanityUrl?: string): string {
-  if (vanityUrl) {
-    return `${window.location.origin}/${vanityUrl}`;
+  try {
+    // Ensure window is available (for SSR)
+    if (typeof window === 'undefined') {
+      throw new Error('Window object not available');
+    }
+
+    // Get the base URL
+    const baseUrl = window.location.origin;
+    
+    // If no vanity URL provided, generate a friendly ID
+    if (!vanityUrl) {
+      return `${baseUrl}/${generateFriendlyId()}`;
+    }
+    
+    // Clean up the vanity URL
+    const cleanVanity = vanityUrl
+      .replace(/^\/+/, '') // Remove leading slashes
+      .split('/')[0] // Take only the first path segment
+      .replace(/[^a-zA-Z0-9-_]/g, '') // Remove invalid characters
+      .substring(0, 50); // Limit length
+    
+    // If we ended up with an empty string, generate a friendly ID
+    if (!cleanVanity) {
+      console.warn('Invalid vanity URL provided, generating a random one');
+      return `${baseUrl}/${generateFriendlyId()}`;
+    }
+    
+    return `${baseUrl}/${cleanVanity}`;
+  } catch (error) {
+    console.error('Error generating short URL:', error);
+    // Fallback to a random ID if anything goes wrong
+    return `https://example.com/${generateFriendlyId()}`;
   }
-  return `${window.location.origin}/${generateId()}`;
 }
 
+/**
+ * Validates a vanity URL segment
+ * - Must be 3-50 characters long
+ * - Can only contain letters, numbers, hyphens, and underscores
+ * - Cannot start or end with a hyphen or underscore
+ */
 export function isValidVanityUrl(vanityUrl: string): boolean {
-  return /^[a-zA-Z0-9-_]+$/.test(vanityUrl) && vanityUrl.length >= 3 && vanityUrl.length <= 50;
+  return (
+    typeof vanityUrl === 'string' &&
+    /^[a-zA-Z0-9][a-zA-Z0-9-_]*[a-zA-Z0-9]$/.test(vanityUrl) &&
+    vanityUrl.length >= 3 &&
+    vanityUrl.length <= 50
+  );
 }
