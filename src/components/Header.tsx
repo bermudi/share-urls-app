@@ -78,14 +78,14 @@ export function Header({ theme, onThemeChange, onNewBundle, hasProgress = false 
                 <Plus className="w-4 h-4" />
                 <span>{t.header.new}</span>
               </button>
-              <button 
+              <button
                 onClick={() => setShowAboutModal(true)}
                 className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 <Info className="w-4 h-4" />
                 <span>{t.header.about}</span>
               </button>
-              <button 
+              <button
                 onClick={() => setShowTermsModal(true)}
                 className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
@@ -191,27 +191,27 @@ export function Header({ theme, onThemeChange, onNewBundle, hasProgress = false 
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t.terms.acceptance.title}</h3>
                 <p>{t.terms.acceptance.content}</p>
               </section>
-              
+
               <section>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t.terms.service.title}</h3>
                 <p>{t.terms.service.content}</p>
               </section>
-              
+
               <section>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t.terms.responsibilities.title}</h3>
                 <p>{t.terms.responsibilities.content}</p>
               </section>
-              
+
               <section>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t.terms.privacy.title}</h3>
                 <p>{t.terms.privacy.content}</p>
               </section>
-              
+
               <section>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t.terms.liability.title}</h3>
                 <p>{t.terms.liability.content}</p>
               </section>
-              
+
               <section>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t.terms.changes.title}</h3>
                 <p>{t.terms.changes.content}</p>

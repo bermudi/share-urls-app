@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Loader2 } from 'lucide-react';
 import { isValidUrl, fetchUrlMetadata, generateId } from '../utils/urlUtils';
 import { useTranslation } from '../hooks/useTranslation';
@@ -16,9 +16,9 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!url.trim()) return;
-    
+
     if (!isValidUrl(url.trim())) {
       setError(t.errors.invalidUrl);
       return;
@@ -74,7 +74,7 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
           )}
         </button>
       </form>
-      
+
       {error && (
         <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
       )}

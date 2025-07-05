@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Languages, Check } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../hooks/useTranslation';
@@ -33,7 +33,7 @@ export function LanguageSelector() {
   const currentLanguage = supportedLanguages.find(lang => lang.code === language);
 
   // Only show languages that have translations implemented
-  const availableLanguages = supportedLanguages.filter(lang => 
+  const availableLanguages = supportedLanguages.filter(lang =>
     lang.code === 'en' || lang.code === 'es'
   );
 
@@ -72,7 +72,7 @@ export function LanguageSelector() {
               {language === lang.code && <Check className="w-4 h-4 text-teal-500" />}
             </button>
           ))}
-          
+
           {/* Coming soon section for other languages */}
           <div className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 mt-1">
             Coming soon

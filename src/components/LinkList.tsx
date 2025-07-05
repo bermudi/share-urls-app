@@ -33,7 +33,7 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
-    
+
     if (!draggedItem || draggedItem === targetId) return;
 
     const draggedIndex = links.findIndex(link => link.id === draggedItem);
@@ -75,7 +75,7 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
   // Helper function to decode HTML entities
   const decodeHtmlEntities = (text: string) => {
     if (!text) return text;
-    
+
     // First try the textarea method for comprehensive decoding
     try {
       const textarea = document.createElement('textarea');
@@ -94,8 +94,8 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&')
         .replace(/&nbsp;/g, ' ')
-        .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(parseInt(dec)))
-        .replace(/&#x([0-9a-f]+);/gi, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+        .replace(/&#(\d+);/g, (_match, dec) => String.fromCharCode(parseInt(dec)))
+        .replace(/&#x([0-9a-f]+);/gi, (_match, hex) => String.fromCharCode(parseInt(hex, 16)));
     }
   };
 
@@ -117,7 +117,7 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
         <h3 className="text-lg font-semibold text-teal-500">{t.links.title}</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400">{t.links.dragToReorder}</p>
       </div>
-      
+
       <div className="space-y-2">
         {links.map((link) => (
           <div
@@ -128,11 +128,9 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, link.id)}
             onDragEnd={handleDragEnd}
-            className={`group flex items-center space-x-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 ${
-              draggedItem === link.id ? 'opacity-50 scale-95' : ''
-            } ${
-              dragOverItem === link.id ? 'border-teal-500 shadow-lg' : 'hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600'
-            }`}
+            className={`group flex items-center space-x-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 ${draggedItem === link.id ? 'opacity-50 scale-95' : ''
+              } ${dragOverItem === link.id ? 'border-teal-500 shadow-lg' : 'hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
           >
             {/* Drag Handle */}
             <button className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Check, AlertCircle } from 'lucide-react';
 import { isValidVanityUrl } from '../utils/urlUtils';
 import { useTranslation } from '../hooks/useTranslation';
@@ -49,9 +49,8 @@ export function BundleSettings({
             value={vanityUrl}
             onChange={(e) => onVanityUrlChange(e.target.value)}
             placeholder={t.main.vanityUrlPlaceholder}
-            className={`w-full px-4 py-3 pr-10 bg-gray-50 dark:bg-gray-800 border rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors ${
-              vanityUrl ? (vanityUrlValid ? 'border-green-500' : 'border-red-500') : 'border-gray-300 dark:border-gray-600'
-            }`}
+            className={`w-full px-4 py-3 pr-10 bg-gray-50 dark:bg-gray-800 border rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors ${vanityUrl ? (vanityUrlValid ? 'border-green-500' : 'border-red-500') : 'border-gray-300 dark:border-gray-600'
+              }`}
           />
           {vanityUrl && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">

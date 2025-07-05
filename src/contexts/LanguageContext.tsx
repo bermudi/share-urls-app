@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type Language = 'en' | 'es' | 'fr' | 'de' | 'pt' | 'ja' | 'ko' | 'zh';
 
@@ -35,10 +35,10 @@ function isValidLanguage(lang: string): lang is Language {
 
 function getBrowserLanguage(): Language {
   if (typeof window === 'undefined') return 'en';
-  
+
   const browserLang = navigator.language.toLowerCase();
   console.log('Browser language detected:', browserLang);
-  
+
   // Check for exact matches first
   for (const lang of SUPPORTED_LANGUAGES) {
     if (browserLang === lang.code || browserLang.startsWith(`${lang.code}-`)) {
@@ -46,7 +46,7 @@ function getBrowserLanguage(): Language {
       return lang.code;
     }
   }
-  
+
   console.log('No match found, defaulting to English');
   return 'en';
 }
@@ -58,22 +58,22 @@ interface LanguageProviderProps {
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'en';
-    
+
     const saved = localStorage.getItem('language');
     console.log('Saved language from localStorage:', saved);
-    
+
     // Validate saved language
     if (saved && isValidLanguage(saved)) {
       console.log('Using saved language:', saved);
       return saved;
     }
-    
+
     // Clear invalid saved language
     if (saved) {
       console.log('Invalid saved language, clearing localStorage');
       localStorage.removeItem('language');
     }
-    
+
     const browserLang = getBrowserLanguage();
     console.log('Using browser language:', browserLang);
     return browserLang;
@@ -82,32 +82,32 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   const setLanguage = (newLanguage: Language) => {
     console.log('=== LANGUAGE CONTEXT CHANGE ===');
     console.log('Changing language from', language, 'to', newLanguage);
-    
+
     if (!isValidLanguage(newLanguage)) {
       console.error('Invalid language:', newLanguage);
       return;
     }
-    
+
     setLanguageState(newLanguage);
   };
 
   useEffect(() => {
     console.log('=== LANGUAGE CONTEXT EFFECT ===');
     console.log('Language state changed to:', language);
-    
+
     // Update localStorage
     localStorage.setItem('language', language);
     console.log('Updated localStorage with language:', language);
-    
+
     // Update document language
     document.documentElement.lang = language;
     console.log('Updated document.documentElement.lang to:', language);
-    
+
     // Force a small delay to ensure state propagation
     const timeoutId = setTimeout(() => {
       console.log('Language change effect completed for:', language);
     }, 100);
-    
+
     return () => clearTimeout(timeoutId);
   }, [language]);
 
