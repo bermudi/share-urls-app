@@ -72,6 +72,33 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
     return link.ogImage && link.favicon === link.ogImage && !imageErrors.has(link.id);
   };
 
+  // Helper function to decode HTML entities
+  const decodeHtmlEntities = (text: string) => {
+    if (!text) return text;
+    
+    // First try the textarea method for comprehensive decoding
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.innerHTML = text;
+      return textarea.value;
+    } catch {
+      // Fallback to manual decoding if textarea method fails
+      return text
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;/g, "'")
+        .replace(/&#x2F;/g, '/')
+        .replace(/&#x3C;/g, '<')
+        .replace(/&#x3E;/g, '>')
+        .replace(/&#x26;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(parseInt(dec)))
+        .replace(/&#x([0-9a-f]+);/gi, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+    }
+  };
+
   if (links.length === 0) {
     return (
       <div className="text-center py-12">
@@ -138,10 +165,10 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
             {/* Content */}
             <div className="flex-1 min-w-0">
               <h4 className="font-medium text-gray-900 dark:text-white truncate">
-                {link.title}
+                {decodeHtmlEntities(link.title)}
               </h4>
               <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                {link.description || link.url}
+                {decodeHtmlEntities(link.description || link.url)}
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
                 {link.url}

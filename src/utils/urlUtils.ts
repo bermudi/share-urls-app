@@ -40,10 +40,37 @@ export async function fetchUrlMetadata(url: string): Promise<Partial<LinkItem>> 
       throw new Error(metadata.error);
     }
 
+    // Helper function to decode HTML entities
+    const decodeHtmlEntities = (text: string) => {
+      if (!text) return text;
+      
+      // First try the textarea method for comprehensive decoding
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = text;
+        return textarea.value;
+      } catch {
+        // Fallback to manual decoding if textarea method fails
+        return text
+          .replace(/&quot;/g, '"')
+          .replace(/&#x27;/g, "'")
+          .replace(/&#x2F;/g, '/')
+          .replace(/&#x3C;/g, '<')
+          .replace(/&#x3E;/g, '>')
+          .replace(/&#x26;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(parseInt(dec)))
+          .replace(/&#x([0-9a-f]+);/gi, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+      }
+    };
+
     return {
       url: metadata.url,
-      title: metadata.title,
-      description: metadata.description,
+      title: decodeHtmlEntities(metadata.title),
+      description: decodeHtmlEntities(metadata.description),
       favicon: metadata.favicon,
       ogImage: metadata.ogImage
     };
@@ -145,7 +172,12 @@ function getDomainSpecificMetadata(domain: string): { title: string; description
 }
 
 export function generateId(): string {
-  return Math.random().toString(36).substr(2, 9);
+  // Generate a proper UUID v4
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 
 export function generateShortUrl(vanityUrl?: string): string {

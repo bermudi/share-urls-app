@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ExternalLink, Calendar, ArrowLeft } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { decodeHtmlEntities } from '../utils/htmlUtils';
 import type { Bundle } from '../types';
 
 interface BundleViewerProps {
@@ -51,7 +52,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
             </h1>
             {bundle.description && (
               <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-                {bundle.description}
+                {decodeHtmlEntities(bundle.description)}
               </p>
             )}
             <div className="flex items-center justify-center space-x-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
@@ -101,10 +102,10 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                    {link.title}
+                    {decodeHtmlEntities(link.title)}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                    {link.description || new URL(link.url).hostname}
+                    {link.description ? decodeHtmlEntities(link.description) : new URL(link.url).hostname}
                   </p>
                 </div>
 
