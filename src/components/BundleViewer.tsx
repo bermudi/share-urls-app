@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ExternalLink, Calendar, ArrowLeft } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { decodeHtmlEntities } from '../utils/htmlUtils';
@@ -119,8 +119,8 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
           <div className="text-center mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {t.viewer.madeWith}{' '}
-              <a 
-                href="/" 
+              <a
+                href="/"
                 className="text-teal-500 hover:text-teal-600 transition-colors font-medium"
               >
                 UrlList
