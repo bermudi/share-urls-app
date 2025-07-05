@@ -24,7 +24,7 @@ export const decodeHtmlEntities = (text: string): string => {
       .replace(/&gt;/g, '>')
       .replace(/&amp;/g, '&')
       .replace(/&nbsp;/g, ' ')
-      .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(parseInt(dec)))
-      .replace(/&#x([0-9a-f]+);/gi, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+      .replace(/&#(\d+);/g, (_match, dec) => String.fromCharCode(parseInt(dec, 10)))
+      .replace(/&#x([0-9a-f]+);/gi, (_match, hex) => String.fromCharCode(parseInt(hex, 16)));
   }
 };
