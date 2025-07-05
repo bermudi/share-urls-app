@@ -19,6 +19,8 @@ export interface Translations {
     vanityUrlPlaceholder: string;
     vanityUrlEmpty: string;
     vanityUrlError: string;
+    vanityUrlTaken: string;
+    vanityUrlAvailable: string;
     description: string;
     descriptionPlaceholder: string;
     publishBundle: string;
@@ -124,6 +126,8 @@ const translations: Record<Language, Translations> = {
       vanityUrlPlaceholder: 'my-awesome-links',
       vanityUrlEmpty: 'Leave empty for auto-generated friendly URL (e.g., amazing-links-123)',
       vanityUrlError: 'Only letters, numbers, hyphens, and underscores allowed (3-50 characters)',
+      vanityUrlTaken: 'This URL is already taken. Please choose a different one.',
+      vanityUrlAvailable: 'This URL is available!',
       description: 'Description',
       descriptionPlaceholder: 'Describe your collection of links...',
       publishBundle: 'Publish Bundle',
@@ -215,6 +219,8 @@ const translations: Record<Language, Translations> = {
       vanityUrlPlaceholder: 'mis-enlaces-geniales',
       vanityUrlEmpty: 'Deja vacío para URL amigable auto-generada (ej., enlaces-geniales-123)',
       vanityUrlError: 'Solo se permiten letras, números, guiones y guiones bajos (3-50 caracteres)',
+      vanityUrlTaken: 'Esta URL ya está en uso. Por favor elige otra diferente.',
+      vanityUrlAvailable: '¡Esta URL está disponible!',
       description: 'Descripción',
       descriptionPlaceholder: 'Describe tu colección de enlaces...',
       publishBundle: 'Publicar Paquete',
