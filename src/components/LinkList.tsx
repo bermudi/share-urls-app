@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { GripVertical, ExternalLink, X, Image } from 'lucide-react';
+import { GripVertical, ExternalLink, X } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 import type { LinkItem } from '../types';
 
 interface LinkListProps {
@@ -9,6 +10,7 @@ interface LinkListProps {
 }
 
 export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps) {
+  const { t } = useTranslation();
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [dragOverItem, setDragOverItem] = useState<string | null>(null);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
@@ -76,8 +78,8 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
         <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
           <ExternalLink className="w-8 h-8 text-gray-400" />
         </div>
-        <p className="text-gray-500 dark:text-gray-400">No links added yet</p>
-        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Add your first link above to get started</p>
+        <p className="text-gray-500 dark:text-gray-400">{t.links.noLinksYet}</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">{t.links.addFirstLink}</p>
       </div>
     );
   }
@@ -85,8 +87,8 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-teal-500">Links</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">Drag links to re-order</p>
+        <h3 className="text-lg font-semibold text-teal-500">{t.links.title}</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{t.links.dragToReorder}</p>
       </div>
       
       <div className="space-y-2">
@@ -153,14 +155,14 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1 text-gray-400 hover:text-teal-500 transition-colors"
-                title="Open link"
+                title={t.links.openLink}
               >
                 <ExternalLink className="w-4 h-4" />
               </a>
               <button
                 onClick={() => onRemoveLink(link.id)}
                 className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                title="Remove link"
+                title={t.links.removeLink}
               >
                 <X className="w-4 h-4" />
               </button>

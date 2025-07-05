@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ExternalLink, Calendar, ArrowLeft } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 import type { Bundle } from '../types';
 
 interface BundleViewerProps {
@@ -8,6 +9,7 @@ interface BundleViewerProps {
 }
 
 export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
+  const { t } = useTranslation();
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
   const handleImageError = (linkId: string) => {
@@ -35,7 +37,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
           className="inline-flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to editor</span>
+          <span>{t.viewer.backToEditor}</span>
         </button>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
@@ -45,7 +47,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
               <span className="text-white font-bold text-xl">url</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Link Bundle
+              {t.viewer.linkBundle}
             </h1>
             {bundle.description && (
               <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
@@ -54,7 +56,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
             )}
             <div className="flex items-center justify-center space-x-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
               <Calendar className="w-4 h-4" />
-              <span>Created {bundle.createdAt.toLocaleDateString()}</span>
+              <span>{t.viewer.created} {bundle.createdAt.toLocaleDateString()}</span>
             </div>
           </div>
 
@@ -115,7 +117,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
           {/* Footer */}
           <div className="text-center mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Made with{' '}
+              {t.viewer.madeWith}{' '}
               <a 
                 href="/" 
                 className="text-teal-500 hover:text-teal-600 transition-colors font-medium"

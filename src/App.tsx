@@ -5,14 +5,17 @@ import { LinkList } from './components/LinkList';
 import { BundleSettings } from './components/BundleSettings';
 import { PublishButton } from './components/PublishButton';
 import { BundleViewer } from './components/BundleViewer';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { useTheme } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { useTranslation } from './hooks/useTranslation';
 import { generateId } from './utils/urlUtils';
 import { supabase } from './lib/supabase';
 import type { LinkItem, Bundle } from './types';
 
-function App() {
+function AppContent() {
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
   const [links, setLinks] = useLocalStorage<LinkItem[]>('urllist-links', []);
   const [vanityUrl, setVanityUrl] = useLocalStorage<string>('urllist-vanity', '');
   const [description, setDescription] = useLocalStorage<string>('urllist-description', '');
@@ -217,7 +220,7 @@ function App() {
           <div className="w-16 h-16 bg-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="text-white font-bold text-xl">url</span>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">Loading bundle...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t.errors.loadingBundle}</p>
         </div>
       </div>
     );
@@ -232,16 +235,16 @@ function App() {
             <span className="text-white font-bold text-xl">404</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Bundle Not Found
+            {t.errors.bundleNotFound}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The bundle you're looking for doesn't exist or hasn't been published yet.
+            {t.errors.bundleNotFoundDescription}
           </p>
           <button
             onClick={handleNewBundle}
             className="inline-flex items-center space-x-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-lg transition-colors"
           >
-            <span>Create New Bundle</span>
+            <span>{t.main.createNewBundle}</span>
           </button>
         </div>
       </div>
@@ -284,10 +287,10 @@ function App() {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Publish Bundle
+                    {t.main.publishBundle}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    Make your link bundle available to share with anyone
+                    {t.main.publishDescription}
                   </p>
                 </div>
                 <PublishButton
@@ -303,10 +306,10 @@ function App() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="mb-6">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Add Links
+                {t.main.addLinks}
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
-                Enter a URL and press Enter to add it to your bundle
+                {t.main.addLinksDescription}
               </p>
             </div>
             <UrlInput onAddLink={handleAddLink} />
@@ -328,13 +331,21 @@ function App() {
                 onClick={() => setViewMode('viewer')}
                 className="inline-flex items-center space-x-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium rounded-lg transition-colors"
               >
-                <span>Preview Bundle</span>
+                <span>{t.main.previewBundle}</span>
               </button>
             </div>
           )}
         </div>
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 
