@@ -32,10 +32,8 @@ export function LanguageSelector() {
 
   const currentLanguage = supportedLanguages.find(lang => lang.code === language);
 
-  // Only show languages that have translations implemented
-  const availableLanguages = supportedLanguages.filter(lang =>
-    lang.code === 'en' || lang.code === 'es'
-  );
+  // Show all supported languages as they now have translations
+  const availableLanguages = [...supportedLanguages];
 
   return (
     <div className="relative" data-language-selector>
@@ -73,26 +71,10 @@ export function LanguageSelector() {
             </button>
           ))}
 
-          {/* Coming soon section for other languages */}
+          {/* All languages are now available */}
           <div className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 mt-1">
-            Coming soon
+            All languages available
           </div>
-          {supportedLanguages
-            .filter(lang => lang.code !== 'en' && lang.code !== 'es')
-            .map((lang) => (
-              <div
-                key={lang.code}
-                className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed"
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="text-lg opacity-50">{lang.flag}</span>
-                  <div className="text-left">
-                    <div className="font-medium">{lang.nativeName}</div>
-                    <div className="text-xs text-gray-400 dark:text-gray-500">{lang.name}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
         </div>
       )}
     </div>
