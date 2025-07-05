@@ -23,6 +23,7 @@ function AppContent() {
   const [viewMode, setViewMode] = useState<'editor' | 'viewer'>('editor');
   const [isLoading, setIsLoading] = useState(false);
   const [bundleNotFound, setBundleNotFound] = useState(false);
+  const [resetPublishButton, setResetPublishButton] = useState(false);
 
   // Check if we're viewing a specific bundle from URL
   useEffect(() => {
@@ -109,6 +110,11 @@ function AppContent() {
 
   const handleAddLink = (link: LinkItem) => {
     setLinks(prevLinks => [...prevLinks, link]);
+    // Reset publish button if we're adding links after publishing
+    if (publishedBundle) {
+      setResetPublishButton(true);
+      setTimeout(() => setResetPublishButton(false), 100);
+    }
   };
 
   const handleReorderLinks = (reorderedLinks: LinkItem[]) => {
@@ -126,8 +132,11 @@ function AppContent() {
     setPublishedBundle(null);
     setViewMode('editor');
     setBundleNotFound(false);
+    setResetPublishButton(true);
     // Clear URL
     window.history.pushState({}, '', '/');
+    // Reset the reset flag after a brief delay
+    setTimeout(() => setResetPublishButton(false), 100);
   };
 
   const handlePublish = async (shareUrl: string) => {
@@ -302,6 +311,7 @@ function AppContent() {
                   bundle={{ vanityUrl, description, links }}
                   canPublish={canPublish}
                   onPublish={handlePublish}
+                  reset={resetPublishButton}
                 />
               </div>
             </div>

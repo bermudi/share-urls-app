@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Share2, Copy, Check, ExternalLink } from 'lucide-react';
 import { generateShortUrl } from '../utils/urlUtils';
 import { useTranslation } from '../hooks/useTranslation';
@@ -8,14 +8,24 @@ interface PublishButtonProps {
   bundle: Partial<Bundle>;
   canPublish: boolean;
   onPublish: (shareUrl: string) => void;
+  reset?: boolean;
 }
 
-export function PublishButton({ bundle, canPublish, onPublish }: PublishButtonProps) {
+export function PublishButton({ bundle, canPublish, onPublish, reset }: PublishButtonProps) {
   const { t } = useTranslation();
   const [isPublishing, setIsPublishing] = useState(false);
   const [isPublished, setIsPublished] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // Reset component state when reset prop changes
+  useEffect(() => {
+    if (reset) {
+      setIsPublished(false);
+      setShareUrl('');
+      setCopied(false);
+    }
+  }, [reset]);
 
   const handlePublish = async () => {
     setIsPublishing(true);
