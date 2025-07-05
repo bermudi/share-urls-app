@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GripVertical, ExternalLink, X } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
+import { decodeHtmlEntities } from '../utils/htmlUtils';
 import type { LinkItem } from '../types';
 
 interface LinkListProps {
@@ -73,31 +74,7 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
   };
 
   // Helper function to decode HTML entities
-  const decodeHtmlEntities = (text: string) => {
-    if (!text) return text;
 
-    // First try the textarea method for comprehensive decoding
-    try {
-      const textarea = document.createElement('textarea');
-      textarea.innerHTML = text;
-      return textarea.value;
-    } catch {
-      // Fallback to manual decoding if textarea method fails
-      return text
-        .replace(/&quot;/g, '"')
-        .replace(/&#x27;/g, "'")
-        .replace(/&#x2F;/g, '/')
-        .replace(/&#x3C;/g, '<')
-        .replace(/&#x3E;/g, '>')
-        .replace(/&#x26;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&')
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&#(\d+);/g, (_match, dec) => String.fromCharCode(parseInt(dec)))
-        .replace(/&#x([0-9a-f]+);/gi, (_match, hex) => String.fromCharCode(parseInt(hex, 16)));
-    }
-  };
 
   if (links.length === 0) {
     return (
