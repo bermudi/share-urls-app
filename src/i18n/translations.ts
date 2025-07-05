@@ -7,7 +7,7 @@ export interface Translations {
     about: string;
     terms: string;
   };
-  
+
   // Main interface
   main: {
     title: string;
@@ -35,7 +35,7 @@ export interface Translations {
     createNewBundle: string;
     newBundleConfirm: string;
   };
-  
+
   // Link list
   links: {
     title: string;
@@ -45,7 +45,7 @@ export interface Translations {
     openLink: string;
     removeLink: string;
   };
-  
+
   // Bundle viewer
   viewer: {
     linkBundle: string;
@@ -53,7 +53,7 @@ export interface Translations {
     created: string;
     madeWith: string;
   };
-  
+
   // Errors and states
   errors: {
     invalidUrl: string;
@@ -62,7 +62,7 @@ export interface Translations {
     bundleNotFoundDescription: string;
     loadingBundle: string;
   };
-  
+
   // About modal
   about: {
     title: string;
@@ -72,7 +72,7 @@ export interface Translations {
     builtWith: string;
     close: string;
   };
-  
+
   // Terms modal
   terms: {
     title: string;
@@ -102,7 +102,7 @@ export interface Translations {
     };
     close: string;
   };
-  
+
   // Language selector
   language: {
     selectLanguage: string;
@@ -217,9 +217,9 @@ const translations: Record<Language, Translations> = {
       urlPlaceholder: 'Ingresa un enlace y presiona enter',
       vanityUrl: 'URL Personalizada',
       vanityUrlPlaceholder: 'mis-enlaces-geniales',
-      vanityUrlEmpty: 'Deja vacío para URL amigable auto-generada (ej., enlaces-geniales-123)',
+      vanityUrlEmpty: 'Deja vacío para URL amigable autogenerada (ej., enlaces-geniales-123)',
       vanityUrlError: 'Solo se permiten letras, números, guiones y guiones bajos (3-50 caracteres)',
-      vanityUrlTaken: 'Esta URL ya está en uso. Por favor elige otra diferente.',
+      vanityUrlTaken: 'Esta URL ya está en uso. Por favor, elige otra.',
       vanityUrlAvailable: '¡Esta URL está disponible!',
       description: 'Descripción',
       descriptionPlaceholder: 'Describe tu colección de enlaces...',
@@ -308,7 +308,7 @@ const translations: Record<Language, Translations> = {
       subtitle: 'Grouper et Partager des Liens Multiples',
       addLinks: 'Ajouter des Liens',
       addLinksDescription: 'Entrez une URL et appuyez sur Entrée pour l\'ajouter à votre collection',
-      urlPlaceholder: 'Entrez un lien et appuyez sur entrée',
+      urlPlaceholder: 'Entrez un lien et appuyez sur Entrée',
       vanityUrl: 'URL Personnalisée',
       vanityUrlPlaceholder: 'mes-liens-super',
       vanityUrlEmpty: 'Laissez vide pour une URL générée automatiquement (ex : liens-super-123)',
@@ -323,7 +323,7 @@ const translations: Record<Language, Translations> = {
       publishing: 'Publication en cours...',
       publishedSuccess: 'Publication réussie !',
       publishedLiveAt: 'Votre collection est maintenant disponible à l\'adresse :',
-      copyToClipboard: 'Copier dans le presse-papier',
+      copyToClipboard: 'Copier dans le presse-papiers',
       visitBundle: 'Voir la collection',
       previewBundle: 'Aperçu de la Collection',
       createNewBundle: 'Créer une Nouvelle Collection',
@@ -425,9 +425,9 @@ const translations: Record<Language, Translations> = {
     },
     links: {
       title: 'Links',
-      dragToReorder: 'Zum Sortieren ziehen',
+      dragToReorder: 'Links zum Neuordnen ziehen',
       noLinksYet: 'Noch keine Links hinzugefügt',
-      addFirstLink: 'Fügen Sie oben Ihren ersten Link hinzu',
+      addFirstLink: 'Fügen Sie oben Ihren ersten Link hinzu, um zu beginnen',
       openLink: 'Link öffnen',
       removeLink: 'Link entfernen',
     },
@@ -456,14 +456,14 @@ const translations: Record<Language, Translations> = {
       title: 'Nutzungsbedingungen',
       acceptance: {
         title: '1. Annahme der Bedingungen',
-        content: 'Durch die Nutzung von UrlList stimmen Sie diesen Nutzungsbedingungen zu. Wenn Sie nicht einverstanden sind, nutzen Sie bitte unseren Dienst nicht.',
+        content: 'Durch die Nutzung von UrlList stimmen Sie diesen Nutzungsbedingungen zu. Wenn Sie nicht zustimmen, nutzen Sie unseren Dienst bitte nicht.',
       },
       service: {
-        title: '2. Dienstbeschreibung',
+        title: '2. Leistungsbeschreibung',
         content: 'UrlList ermöglicht es Benutzern, Sammlungen von URLs zu erstellen und über einen einzigen Link zu teilen. Der Dienst wird ohne jegliche Gewährleistung angeboten.',
       },
       responsibilities: {
-        title: '3. Benutzerverantwortung',
+        title: '3. Verantwortlichkeiten des Nutzers',
         content: 'Benutzer sind für die von ihnen geteilten Inhalte verantwortlich und dürfen den Dienst nicht für illegale, schädliche oder unangemessene Inhalte nutzen.',
       },
       privacy: {
@@ -499,7 +499,7 @@ const translations: Record<Language, Translations> = {
       urlPlaceholder: 'Digite um link e pressione enter',
       vanityUrl: 'URL Personalizada',
       vanityUrlPlaceholder: 'meus-links-incriveis',
-      vanityUrlEmpty: 'Deixe em branco para gerar uma URL automática (ex: links-incriveis-123)',
+      vanityUrlEmpty: 'Deixe em branco para uma URL amigável gerada automaticamente (ex: links-incriveis-123)',
       vanityUrlError: 'Apenas letras, números, hífens e sublinhados são permitidos (3-50 caracteres)',
       vanityUrlTaken: 'Esta URL já está em uso. Por favor, escolha outra.',
       vanityUrlAvailable: 'Esta URL está disponível!',
@@ -582,7 +582,7 @@ const translations: Record<Language, Translations> = {
   ja: {
     header: {
       new: '新規',
-      about: 'アバウト',
+      about: '概要',
       terms: '利用規約',
     },
     main: {
@@ -615,7 +615,7 @@ const translations: Record<Language, Translations> = {
       title: 'リンク',
       dragToReorder: 'ドラッグして並べ替え',
       noLinksYet: 'リンクがまだ追加されていません',
-      addFirstLink: '上記に最初のリンクを追加して開始',
+      addFirstLink: '上で最初のリンクを追加して始めましょう',
       openLink: 'リンクを開く',
       removeLink: 'リンクを削除',
     },
@@ -623,7 +623,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'リンクバンドル',
       backToEditor: 'エディターに戻る',
       created: '作成日',
-      madeWith: '作成：',
+      madeWith: '作成ツール',
     },
     errors: {
       invalidUrl: '有効なURLを入力してください',
@@ -701,7 +701,7 @@ const translations: Record<Language, Translations> = {
       publishedLiveAt: '번들이 다음 주소에서 확인 가능합니다:',
       copyToClipboard: '클립보드에 복사',
       visitBundle: '번들 보기',
-      previewBundle: '미리보기',
+      previewBundle: '번들 미리보기',
       createNewBundle: '새 번들 만들기',
       newBundleConfirm: '새 번들을 만들겠습니까? 현재의 모든 링크와 설정이 삭제됩니다.',
     },
@@ -717,12 +717,12 @@ const translations: Record<Language, Translations> = {
       linkBundle: '링크 번들',
       backToEditor: '편집기로 돌아가기',
       created: '생성일',
-      madeWith: '만든이',
+      madeWith: '제작',
     },
     errors: {
       invalidUrl: '유효한 URL을 입력해주세요',
       fetchFailed: '링크 정보를 가져오는데 실패했습니다',
-      bundleNotFound: '번들을 찾을 수 없음',
+      bundleNotFound: '번들을 찾을 수 없습니다',
       bundleNotFoundDescription: '요청하신 번들이 존재하지 않거나 아직 공개되지 않았습니다.',
       loadingBundle: '번들 불러오는 중...',
     },
@@ -865,15 +865,15 @@ const translations: Record<Language, Translations> = {
 export function getTranslations(language: Language): Translations {
   console.log('=== GET TRANSLATIONS ===');
   console.log('Requested language:', language);
-  
+
   const translation = translations[language];
-  
+
   // If translation doesn't exist or is empty, fall back to English
   if (!translation || Object.keys(translation).length === 0) {
     console.log(`Translation for ${language} not found or empty, falling back to English`);
     return translations.en;
   }
-  
+
   console.log(`Using translations for: ${language}`);
   return translation;
 }
