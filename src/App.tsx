@@ -198,6 +198,11 @@ function AppContent() {
       
       setPublishedBundle(publishedBundleData);
       
+      // Clear local storage after successful publish
+      setLinks([]);
+      setVanityUrl('');
+      setDescription('');
+      
       // Update URL to the published bundle
       const urlPath = vanityUrl || bundleId;
       window.history.pushState({}, '', `/${urlPath}`);
