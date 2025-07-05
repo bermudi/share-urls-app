@@ -13,12 +13,12 @@ serve(async (req) => {
 
   try {
     const { url } = await req.json()
-    
+
     if (!url) {
       return new Response(
         JSON.stringify({ error: 'URL is required' }),
-        { 
-          status: 400, 
+        {
+          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )
@@ -31,8 +31,8 @@ serve(async (req) => {
     } catch {
       return new Response(
         JSON.stringify({ error: 'Invalid URL' }),
-        { 
-          status: 400, 
+        {
+          status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )
@@ -50,28 +50,46 @@ serve(async (req) => {
     }
 
     const html = await response.text()
-    
+
     // Parse HTML to extract metadata
     const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
     const ogTitleMatch = html.match(/<meta[^>]*property="og:title"[^>]*content="([^"]*)"[^>]*>/i)
     const twitterTitleMatch = html.match(/<meta[^>]*name="twitter:title"[^>]*content="([^"]*)"[^>]*>/i)
-    
+
     const descMatch = html.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i)
     const ogDescMatch = html.match(/<meta[^>]*property="og:description"[^>]*content="([^"]*)"[^>]*>/i)
     const twitterDescMatch = html.match(/<meta[^>]*name="twitter:description"[^>]*content="([^"]*)"[^>]*>/i)
-    
+
     const ogImageMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]*)"[^>]*>/i)
     const twitterImageMatch = html.match(/<meta[^>]*name="twitter:image"[^>]*content="([^"]*)"[^>]*>/i)
-    
+
     const faviconMatch = html.match(/<link[^>]*rel="(?:icon|shortcut icon|apple-touch-icon)"[^>]*href="([^"]*)"[^>]*>/i)
 
+    // Helper function to decode HTML entities
+    const decodeHtmlEntities = (text: string): string => {
+      if (!text) return text;
+      return text
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;/g, "'")
+        .replace(/&#x2F;/g, '/')
+        .replace(/&#x3C;/g, '<')
+        .replace(/&#x3E;/g, '>')
+        .replace(/&#x26;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec))
+        .replace(/&#x([0-9a-f]+);/gi, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+    };
+
     // Extract and clean metadata
-    const title = (ogTitleMatch?.[1] || twitterTitleMatch?.[1] || titleMatch?.[1] || '').trim()
-    const description = (ogDescMatch?.[1] || twitterDescMatch?.[1] || descMatch?.[1] || '').trim()
-    
+    const title = decodeHtmlEntities((ogTitleMatch?.[1] || twitterTitleMatch?.[1] || titleMatch?.[1] || '').trim())
+    const description = decodeHtmlEntities((ogDescMatch?.[1] || twitterDescMatch?.[1] || descMatch?.[1] || '').trim())
+
     let ogImage = ogImageMatch?.[1] || twitterImageMatch?.[1] || ''
     let favicon = faviconMatch?.[1] || ''
-    
+
     // Resolve relative URLs
     if (ogImage && !ogImage.startsWith('http')) {
       ogImage = new URL(ogImage, targetUrl.href).href
@@ -79,7 +97,7 @@ serve(async (req) => {
     if (favicon && !favicon.startsWith('http')) {
       favicon = new URL(favicon, targetUrl.href).href
     }
-    
+
     // Fallback favicon
     if (!favicon) {
       favicon = `https://www.google.com/s2/favicons?domain=${targetUrl.hostname}&sz=32`
@@ -95,21 +113,21 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify(metadata),
-      { 
+      {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     )
 
   } catch (error) {
     console.error('Error fetching metadata:', error)
-    
+
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: 'Failed to fetch metadata',
-        details: error.message 
+        details: error.message
       }),
-      { 
-        status: 500, 
+      {
+        status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     )
