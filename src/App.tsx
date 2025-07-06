@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Header } from './components/Header';
 import { UrlInput } from './components/UrlInput';
 import { LinkList } from './components/LinkList';
@@ -260,7 +262,7 @@ function AppContent() {
       } catch (err) {
         console.error('Error publishing bundle:', err);
         if (attempt >= maxRetries - 1) {
-          alert(`Failed to publish bundle: ${err instanceof Error ? err.message : 'Unknown error'}`);
+          toast.error(`Failed to publish bundle: ${err instanceof Error ? err.message : 'Unknown error'}`);
           // Return an empty string as a fallback (shouldn't happen as we throw an error)
           return '';
         }
@@ -271,7 +273,7 @@ function AppContent() {
     
     // If we get here, all retries failed
     const errorMessage = lastError ? lastError.message : 'Unknown error';
-    alert(`Failed to publish bundle after ${maxRetries} attempts: ${errorMessage}`);
+    toast.error(`Failed to publish bundle after ${maxRetries} attempts: ${errorMessage}`);
     return ''; // Return empty string as a fallback
   };
 
@@ -412,6 +414,18 @@ function App() {
   return (
     <LanguageProvider>
       <AppContent />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </LanguageProvider>
   );
 }

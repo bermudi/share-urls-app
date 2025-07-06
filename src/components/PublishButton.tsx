@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Share2, Copy, Check, ExternalLink } from 'lucide-react';
 import { generateShortUrl } from '../utils/urlUtils';
 import { useTranslation } from '../hooks/useTranslation';
+import { toast } from 'react-toastify';
 import type { Bundle } from '../types';
 
 interface PublishButtonProps {
@@ -50,10 +51,11 @@ export function PublishButton({ bundle, canPublish, onPublish, reset }: PublishB
       console.log('Final published URL:', finalUrl);
       setShareUrl(finalUrl);
       setIsPublished(true);
+      toast.success('Bundle successfully published!');
     } catch (error) {
       console.error('Failed to publish:', error);
-      // Show error to user
-      alert(`Failed to publish: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      // Show error to user with toast notification
+      toast.error(`Failed to publish: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setShareUrl('');
     } finally {
       setIsPublishing(false);
@@ -64,14 +66,17 @@ export function PublishButton({ bundle, canPublish, onPublish, reset }: PublishB
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
+      toast.success('URL copied to clipboard!');
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Failed to copy to clipboard:', err);
+      toast.error('Failed to copy to clipboard');
     }
   };
 
   const handleVisit = () => {
     window.open(shareUrl, '_blank');
+    toast.info('Opening link in new tab');
   };
 
   if (!isPublished) {
