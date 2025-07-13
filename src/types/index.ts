@@ -6,6 +6,7 @@ export interface LinkItem {
   favicon: string;
   ogImage?: string; // Optional OG image for richer previews
   addedAt: Date;
+  isLoading?: boolean; // Indicates if the link metadata is still loading
   wasRedirected?: boolean; // Flag indicating if the URL was redirected
   originalUrl?: string; // Original URL before redirects
 }

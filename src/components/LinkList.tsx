@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GripVertical, ExternalLink, X } from 'lucide-react';
+import { GripVertical, ExternalLink, X, Loader2 } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { decodeHtmlEntities } from '../utils/htmlUtils';
 import type { LinkItem } from '../types';
@@ -103,7 +103,11 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
 
               {/* Image/Favicon */}
               <div className="flex-shrink-0">
-                {isLargeImage(link) ? (
+                {link.isLoading ? (
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                  </div>
+                ) : isLargeImage(link) ? (
                   <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                     <img
                       src={getImageSrc(link)}
@@ -127,10 +131,10 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-gray-900 dark:text-white truncate">
-                  {decodeHtmlEntities(link.title)}
+                  {link.isLoading ? 'Loading...' : decodeHtmlEntities(link.title)}
                 </h4>
                 <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                  {decodeHtmlEntities(link.description || link.url)}
+                  {link.isLoading ? 'Fetching details...' : decodeHtmlEntities(link.description || link.url)}
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
                   {link.url}
@@ -138,24 +142,26 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1 text-gray-400 hover:text-teal-500 transition-colors"
-                  title={t.links.openLink}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-                <button
-                  onClick={() => onRemoveLink(link.id)}
-                  className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                  title={t.links.removeLink}
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+              {!link.isLoading && (
+                <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 text-gray-400 hover:text-teal-500 transition-colors"
+                    title={t.links.openLink}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <button
+                    onClick={() => onRemoveLink(link.id)}
+                    className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                    title={t.links.removeLink}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>

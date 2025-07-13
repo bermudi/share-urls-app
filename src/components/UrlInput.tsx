@@ -9,7 +9,7 @@ interface UrlInputProps {
   onUpdateLink?: (id: string, updatedLink: Partial<LinkItem>) => void;
 }
 
-export function UrlInput({ onAddLink }: UrlInputProps) {
+export function UrlInput({ onAddLink, onUpdateLink }: UrlInputProps) {
   const { t } = useTranslation();
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +20,63 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!url.trim()) return;
+
+    const normalizedUrl = normalizeUrl(url.trim());
+
+    // Validate URL
+    if (!isValidUrl(normalizedUrl)) {
+      setError(t.errors.invalidUrl);
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    const linkId = generateId();
+
+    // Add placeholder link immediately
+    const placeholderLink: LinkItem = {
+      id: linkId,
+      url: normalizedUrl,
+      title: 'Loading...',
+      description: 'Fetching details...',
+      favicon: '',
+      addedAt: new Date(),
+      isLoading: true,
+    };
+    onAddLink(placeholderLink);
+    setUrl('');
+
+    try {
+      const metadata = await fetchUrlMetadata(normalizedUrl);
+
+      const updatedLink: Partial<LinkItem> = {
+        url: metadata.url || normalizedUrl,
+        title: metadata.title || 'Untitled',
+        description: metadata.description || '',
+        favicon: metadata.favicon || '',
+        ogImage: metadata.ogImage,
+        wasRedirected: metadata.wasRedirected,
+        originalUrl: metadata.originalUrl,
+        isLoading: false,
+      };
+
+      onUpdateLink?.(linkId, updatedLink);
+    } catch (err) {
+      console.error('Error fetching metadata:', err);
+      onUpdateLink?.(linkId, {
+        title: `Error loading ${new URL(normalizedUrl).hostname}`,
+        description: 'Could not load page information',
+        isLoading: false,
+      });
+      setError(t.errors.fetchFailed);
+    } finally {
+      setIsLoading(false);
+    }
+  }; /* duplicate block removed */
+    /* e.preventDefault();
 
     if (!url.trim()) return;
 
@@ -35,12 +92,32 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
     setIsLoading(true);
     setError('');
 
+    const linkId = generateId();
+
+    // If an update callback is provided, create a placeholder link first
+    if (onUpdateLink) {
+      const placeholderLink: LinkItem = {
+        id: linkId,
+        url: normalizedUrl,
+        title: 'Loading...',
+        description: 'Fetching details...',
+        favicon: '',
+        addedAt: new Date(),
+        isLoading: true,
+      };
+      onAddLink(placeholderLink);
+    }
+
     try {
-      // Fetch metadata only after submission
+      // Fetch metadata after submission
       const metadata = await fetchUrlMetadata(normalizedUrl);
 
-      const newLink: LinkItem = {
-        id: generateId(),
+      if (onUpdateLink) {
+        onUpdateLink(linkId, {
+          url: metadata.url || normalizedUrl,
+          title: metadata.title || 'Untitled',
+          description: metadata.description || '',
+          favicon: metadata.favicon || '',
         url: metadata.url || normalizedUrl,
         title: metadata.title || 'Untitled',
         description: metadata.description || '',
@@ -49,9 +126,24 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
         addedAt: new Date(),
         wasRedirected: metadata.wasRedirected,
         originalUrl: metadata.originalUrl,
+        isLoading: false,
       };
 
-      onAddLink(newLink);
+      if (onUpdateLink) {
+        const placeholderLink: LinkItem = {
+          id: linkId,
+          url: normalizedUrl,
+          title: 'Loading...',
+          description: 'Fetching details...',
+          favicon: '',
+          addedAt: new Date(),
+          isLoading: true,
+        };
+        onAddLink(placeholderLink);
+        onUpdateLink(linkId, finalLink);
+      } else {
+        onAddLink(finalLink);
+      }
 
       // Clear the input after successful submission
       setUrl('');
@@ -63,6 +155,7 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
     }
   };
 
+  */
   return (
     <div className="space-y-2">
       <form onSubmit={handleSubmit} className="relative">
