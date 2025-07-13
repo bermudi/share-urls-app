@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ExternalLink, Calendar, ArrowLeft } from 'lucide-react';
+import { ExternalLink, Calendar, ArrowLeft, Link as LinkIcon } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { decodeHtmlEntities } from '../utils/htmlUtils';
 import type { Bundle } from '../types';
@@ -31,55 +31,55 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={onBack}
-          className="inline-flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-8"
+          className="inline-flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors mb-8 text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{t.viewer.backToEditor}</span>
         </button>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-xl">url</span>
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-center">
+            <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <LinkIcon className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-2xl font-bold text-white mb-3">
               {t.viewer.linkBundle}
             </h1>
             {bundle.description && (
-              <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+              <p className="text-indigo-100 max-w-md mx-auto text-sm">
                 {decodeHtmlEntities(bundle.description)}
               </p>
             )}
-            <div className="flex items-center justify-center space-x-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
-              <Calendar className="w-4 h-4" />
-              <span>{t.viewer.created} {bundle.createdAt.toLocaleDateString()}</span>
+            <div className="flex items-center justify-center space-x-2 mt-4 text-xs text-indigo-200">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>{t.viewer.created} {bundle.createdAt.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
             </div>
           </div>
 
           {/* Links */}
-          <div className="space-y-3">
+          <div className="divide-y divide-gray-100 dark:divide-gray-700">
             {bundle.links.map((link, index) => (
               <a
                 key={link.id}
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center space-x-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-teal-500 hover:shadow-md transition-all duration-200"
+                className="group flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors duration-150"
               >
                 {/* Index */}
-                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-400 flex-shrink-0">
+                <div className="w-6 h-6 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 mr-3">
                   {index + 1}
                 </div>
 
                 {/* Image/Favicon */}
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 mr-3">
                   {isLargeImage(link) ? (
-                    <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
                       <img
                         src={getImageSrc(link)}
                         alt=""
@@ -88,11 +88,11 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                       />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
                       <img
                         src={getImageSrc(link)}
                         alt=""
-                        className="w-full h-full object-cover"
+                        className="w-4 h-4 object-contain"
                         onError={() => handleImageError(link.id)}
                       />
                     </div>
@@ -100,19 +100,28 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                    {decodeHtmlEntities(link.title)}
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
+                    {decodeHtmlEntities(link.title || link.url)}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                    {link.description ? decodeHtmlEntities(link.description) : new URL(link.url).hostname}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                    {new URL(link.url).hostname.replace('www.', '')}
                   </p>
                 </div>
 
                 {/* External Link Icon */}
-                <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-teal-500 transition-colors flex-shrink-0" />
+                <div className="text-gray-300 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors ml-2">
+                  <ExternalLink className="w-4 h-4" />
+                </div>
               </a>
             ))}
+          </div>
+
+          {/* Footer */}
+          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 text-center">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {t.viewer.linksCount.replace('{count}', bundle.links.length.toString())}
+            </p>
           </div>
 
           {/* Footer */}
