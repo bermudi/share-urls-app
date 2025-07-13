@@ -127,6 +127,12 @@ function AppContent() {
   const handleRemoveLink = (id: string) => {
     setLinks(prevLinks => prevLinks.filter(link => link.id !== id));
   };
+  
+  const handleUpdateLink = (id: string, updatedLink: Partial<LinkItem>) => {
+    setLinks(prevLinks => prevLinks.map(link => 
+      link.id === id ? { ...link, ...updatedLink } : link
+    ));
+  };
 
   const handleNewBundle = () => {
     setLinks([]);
@@ -382,7 +388,7 @@ function AppContent() {
                 {t.main.addLinksDescription}
               </p>
             </div>
-            <UrlInput onAddLink={handleAddLink} />
+            <UrlInput onAddLink={handleAddLink} onUpdateLink={handleUpdateLink} />
           </div>
 
           {/* Link List */}

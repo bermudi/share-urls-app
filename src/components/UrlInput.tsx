@@ -6,9 +6,10 @@ import type { LinkItem } from '../types';
 
 interface UrlInputProps {
   onAddLink: (link: LinkItem) => void;
+  onUpdateLink?: (id: string, updatedLink: Partial<LinkItem>) => void;
 }
 
-export function UrlInput({ onAddLink }: UrlInputProps) {
+export function UrlInput({ onAddLink, onUpdateLink }: UrlInputProps) {
   const { t } = useTranslation();
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -60,10 +61,13 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
     setIsLoading(true);
     setError('');
     
+    // Generate a consistent ID for this link
+    const linkId = generateId();
+    
     // If we already have preliminary data, add it immediately
     if (preliminaryData) {
       const preliminaryLink: LinkItem = {
-        id: generateId(),
+        id: linkId,
         url: preliminaryData.url || normalizedUrl,
         title: preliminaryData.title || 'Loading...',
         description: preliminaryData.description || 'Fetching details...',
@@ -76,29 +80,53 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
     }
 
     try {
-      // Fetch the full metadata with the callback for loading state changes
-      await fetchUrlMetadata(normalizedUrl, ({ isLoading, preliminaryData }) => {
-        // This callback will be called with loading state updates
-        if (!isLoading && preliminaryData) {
-          // When loading is complete, update the link with final data
+      // Store whether we added a preliminary link
+      const addedPreliminaryLink = !!preliminaryData;
+      
+      try {
+        // Fetch the full metadata
+        const metadata = await fetchUrlMetadata(normalizedUrl);
+        
+        // Once we have the final metadata, update the link
+        if (onUpdateLink && addedPreliminaryLink) {
+          // Update the existing link with final data
+          onUpdateLink(linkId, {
+            url: metadata.url || normalizedUrl,
+            title: metadata.title || 'Untitled',
+            description: metadata.description || '',
+            favicon: metadata.favicon || '',
+            ogImage: metadata.ogImage,
+            wasRedirected: metadata.wasRedirected,
+            originalUrl: metadata.originalUrl
+          });
+        } else {
+          // If no update function provided or no preliminary data was added,
+          // create a new link with the final data
           const finalLink: LinkItem = {
-            id: generateId(),
-            url: preliminaryData.url || normalizedUrl,
-            title: preliminaryData.title || 'Untitled',
-            description: preliminaryData.description || '',
-            favicon: preliminaryData.favicon || '',
-            ogImage: preliminaryData.ogImage,
+            id: linkId,
+            url: metadata.url || normalizedUrl,
+            title: metadata.title || 'Untitled',
+            description: metadata.description || '',
+            favicon: metadata.favicon || '',
+            ogImage: metadata.ogImage,
             addedAt: new Date(),
-            wasRedirected: preliminaryData.wasRedirected,
-            originalUrl: preliminaryData.originalUrl
+            wasRedirected: metadata.wasRedirected,
+            originalUrl: metadata.originalUrl
           };
           
-          // Only add the link if we didn't already add a preliminary version
-          if (!preliminaryData) {
-            onAddLink(finalLink);
-          }
+          onAddLink(finalLink);
         }
-      });
+      } catch (error) {
+        console.error('Error fetching metadata:', error);
+        // If there was an error and we already added a preliminary link,
+        // update it with an error state
+        if (onUpdateLink && addedPreliminaryLink) {
+          onUpdateLink(linkId, {
+            title: `Error loading ${new URL(normalizedUrl).hostname}`,
+            description: 'Could not load page information'
+          });
+        }
+      }
       
       // Clear the input after successful submission
       setUrl('');

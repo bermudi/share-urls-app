@@ -20,7 +20,7 @@ export function normalizeUrl(url: string): string {
 /**
  * Fetches metadata for a URL with immediate loading state
  * @param url The URL to fetch metadata for
- * @param onLoadingStateChange Optional callback for loading state changes
+ * @param onLoadingStateChange Optional callback for loading state changes (deprecated)
  * @returns Promise resolving to partial LinkItem with metadata
  */
 export async function fetchUrlMetadata(
@@ -29,27 +29,25 @@ export async function fetchUrlMetadata(
 ): Promise<Partial<LinkItem>> {
   const normalizedUrl = normalizeUrl(url);
   
-  // Immediately return preliminary data for valid URLs
-  if (isValidUrl(normalizedUrl)) {
-    const domain = new URL(normalizedUrl).hostname;
-    const preliminaryData: Partial<LinkItem> = {
-      url: normalizedUrl,
-      title: `Loading ${domain}...`,
-      description: 'Fetching page information...',
-      favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
-    };
-    
-    // Notify about loading state with preliminary data
-    onLoadingStateChange?.({ isLoading: true, url: normalizedUrl, preliminaryData });
-    
-    // Return preliminary data immediately if requested
-    return preliminaryData;
+  // Validate URL – throw early if invalid
+  if (!isValidUrl(normalizedUrl)) {
+    throw new Error('Invalid URL');
   }
 
+  // Provide preliminary metadata immediately
+  const domain = new URL(normalizedUrl).hostname;
+  const preliminaryData: Partial<LinkItem> = {
+    url: normalizedUrl,
+    title: `Loading ${domain}...`,
+    description: 'Fetching page information...',
+    favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
+  };
+
+  // Notify consumer that we started fetching
+  onLoadingStateChange?.({ isLoading: true, url: normalizedUrl, preliminaryData });
+
   try {
-    // Notify that we're starting the actual fetch
-    onLoadingStateChange?.({ isLoading: true, url: normalizedUrl });
-    
+
     // Use our Supabase edge function to fetch metadata
     const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-metadata`, {
       method: 'POST',
