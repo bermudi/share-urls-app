@@ -117,7 +117,7 @@ const translations: Record<Language, Translations> = {
       terms: 'Terms',
     },
     main: {
-      title: 'UrlList',
+      title: 'thesharing.link',
       subtitle: 'Bundle and Share Multiple URLs',
       addLinks: 'Add Links',
       addLinksDescription: 'Enter a URL and press Enter to add it to your bundle',
@@ -154,7 +154,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Link Bundle',
       backToEditor: 'Back to editor',
       created: 'Created',
-      madeWith: 'Made with',
+      madeWith: 'Made with thesharing.link',
     },
     errors: {
       invalidUrl: 'Please enter a valid URL',
@@ -164,8 +164,8 @@ const translations: Record<Language, Translations> = {
       loadingBundle: 'Loading bundle...',
     },
     about: {
-      title: 'About UrlList',
-      description1: 'UrlList is a simple tool for bundling and sharing multiple URLs through a single, shareable link.',
+      title: 'About thesharing.link',
+      description1: 'thesharing.link is a simple tool for bundling and sharing multiple URLs through a single, shareable link.',
       description2: 'Perfect for sharing collections of resources, articles, tools, or any group of links with friends, colleagues, or your audience.',
       description3: 'No sign-up required - just create your bundle and share it instantly!',
       builtWith: 'Built with React, TypeScript, and Tailwind CSS',
@@ -175,11 +175,11 @@ const translations: Record<Language, Translations> = {
       title: 'Terms of Service',
       acceptance: {
         title: '1. Acceptance of Terms',
-        content: 'By using UrlList, you agree to these terms of service. If you do not agree, please do not use our service.',
+        content: 'By using thesharing.link, you agree to these terms of service. If you do not agree, please do not use our service.',
       },
       service: {
         title: '2. Service Description',
-        content: 'UrlList allows users to create bundles of URLs and share them through a single link. The service is provided as-is without warranties.',
+        content: 'thesharing.link allows users to create bundles of URLs and share them through a single link. The service is provided as-is without warranties.',
       },
       responsibilities: {
         title: '3. User Responsibilities',
@@ -191,7 +191,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. Limitation of Liability',
-        content: 'UrlList is provided without warranty. We are not liable for any damages arising from use of the service.',
+        content: 'thesharing.link is provided without warranty. We are not liable for any damages arising from use of the service.',
       },
       changes: {
         title: '6. Changes to Terms',
@@ -210,7 +210,7 @@ const translations: Record<Language, Translations> = {
       terms: 'Términos',
     },
     main: {
-      title: 'UrlList',
+      title: 'thesharing.link',
       subtitle: 'Agrupa y Comparte Múltiples URLs',
       addLinks: 'Agregar Enlaces',
       addLinksDescription: 'Ingresa una URL y presiona Enter para agregarla a tu paquete',
@@ -247,7 +247,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Paquete de Enlaces',
       backToEditor: 'Volver al editor',
       created: 'Creado',
-      madeWith: 'Hecho con',
+      madeWith: 'Hecho con thesharing.link',
     },
     errors: {
       invalidUrl: 'Por favor ingresa una URL válida',
@@ -257,8 +257,8 @@ const translations: Record<Language, Translations> = {
       loadingBundle: 'Cargando paquete...',
     },
     about: {
-      title: 'Acerca de UrlList',
-      description1: 'UrlList es una herramienta simple para agrupar y compartir múltiples URLs a través de un solo enlace compartible.',
+      title: 'Acerca de thesharing.link',
+      description1: 'thesharing.link es una herramienta simple para agrupar y compartir múltiples URLs a través de un solo enlace compartible.',
       description2: 'Perfecto para compartir colecciones de recursos, artículos, herramientas, o cualquier grupo de enlaces con amigos, colegas, o tu audiencia.',
       description3: '¡No se requiere registro - solo crea tu paquete y compártelo instantáneamente!',
       builtWith: 'Construido con React, TypeScript, y Tailwind CSS',
@@ -268,11 +268,11 @@ const translations: Record<Language, Translations> = {
       title: 'Términos de Servicio',
       acceptance: {
         title: '1. Aceptación de Términos',
-        content: 'Al usar UrlList, aceptas estos términos de servicio. Si no estás de acuerdo, por favor no uses nuestro servicio.',
+        content: 'Al usar thesharing.link, aceptas estos términos de servicio. Si no estás de acuerdo, por favor no uses nuestro servicio.',
       },
       service: {
         title: '2. Descripción del Servicio',
-        content: 'UrlList permite a los usuarios crear paquetes de URLs y compartirlos a través de un solo enlace. El servicio se proporciona tal como está, sin garantías.',
+        content: 'thesharing.link permite a los usuarios crear paquetes de URLs y compartirlos a través de un solo enlace. El servicio se proporciona tal como está, sin garantías.',
       },
       responsibilities: {
         title: '3. Responsabilidades del Usuario',
@@ -284,7 +284,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. Limitación de Responsabilidad',
-        content: 'UrlList se proporciona sin garantía. No somos responsables de ningún daño que surja del uso del servicio.',
+        content: 'thesharing.link se proporciona sin garantía. No somos responsables de ningún daño que surja del uso del servicio.',
       },
       changes: {
         title: '6. Cambios en los Términos',
@@ -304,7 +304,7 @@ const translations: Record<Language, Translations> = {
       terms: 'Conditions',
     },
     main: {
-      title: 'UrlList',
+      title: 'thesharing.link',
       subtitle: 'Grouper et Partager des Liens Multiples',
       addLinks: 'Ajouter des Liens',
       addLinksDescription: 'Entrez une URL et appuyez sur Entrée pour l\'ajouter à votre collection',
@@ -341,7 +341,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Collection de Liens',
       backToEditor: 'Retour à l\'éditeur',
       created: 'Créé',
-      madeWith: 'Fait avec',
+      madeWith: 'Fait avec thesharing.link',
     },
     errors: {
       invalidUrl: 'Veuillez entrer une URL valide',
@@ -351,8 +351,8 @@ const translations: Record<Language, Translations> = {
       loadingBundle: 'Chargement de la collection...',
     },
     about: {
-      title: 'À propos de UrlList',
-      description1: 'UrlList est un outil simple pour grouper et partager plusieurs liens via une seule URL partageable.',
+      title: 'À propos de thesharing.link',
+      description1: 'thesharing.link est un outil simple pour grouper et partager plusieurs liens via une seule URL partageable.',
       description2: 'Idéal pour partager des collections de ressources, articles, outils ou tout groupe de liens avec des amis, collègues ou votre public.',
       description3: 'Aucune inscription requise - créez simplement votre collection et partagez-la instantanément !',
       builtWith: 'Construit avec React, TypeScript et Tailwind CSS',
@@ -362,11 +362,11 @@ const translations: Record<Language, Translations> = {
       title: 'Conditions d\'Utilisation',
       acceptance: {
         title: '1. Acceptation des Conditions',
-        content: 'En utilisant UrlList, vous acceptez ces conditions d\'utilisation. Si vous n\'êtes pas d\'accord, veuillez ne pas utiliser notre service.',
+        content: 'En utilisant thesharing.link, vous acceptez ces conditions d\'utilisation. Si vous n\'êtes pas d\'accord, veuillez ne pas utiliser notre service.',
       },
       service: {
         title: '2. Description du Service',
-        content: 'UrlList permet aux utilisateurs de créer des collections de liens et de les partager via une seule URL. Le service est fourni tel quel, sans garantie.',
+        content: 'thesharing.link permet aux utilisateurs de créer des collections de liens et de les partager via une seule URL. Le service est fourni tel quel, sans garantie.',
       },
       responsibilities: {
         title: '3. Responsabilités de l\'Utilisateur',
@@ -378,7 +378,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. Limitation de Responsabilité',
-        content: 'UrlList est fourni sans garantie. Nous ne sommes pas responsables des dommages résultant de l\'utilisation du service.',
+        content: 'thesharing.link est fourni sans garantie. Nous ne sommes pas responsables des dommages résultant de l\'utilisation du service.',
       },
       changes: {
         title: '6. Modifications des Conditions',
@@ -398,7 +398,7 @@ const translations: Record<Language, Translations> = {
       terms: 'Nutzungsbedingungen',
     },
     main: {
-      title: 'UrlList',
+      title: 'thesharing.link',
       subtitle: 'Mehrere Links bündeln und teilen',
       addLinks: 'Links hinzufügen',
       addLinksDescription: 'Geben Sie eine URL ein und drücken Sie die Eingabetaste, um sie zu Ihrem Bundle hinzuzufügen',
@@ -435,7 +435,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Link-Bundle',
       backToEditor: 'Zurück zum Editor',
       created: 'Erstellt',
-      madeWith: 'Erstellt mit',
+      madeWith: 'Erstellt mit thesharing.link',
     },
     errors: {
       invalidUrl: 'Bitte geben Sie eine gültige URL ein',
@@ -445,8 +445,8 @@ const translations: Record<Language, Translations> = {
       loadingBundle: 'Lade Bundle...',
     },
     about: {
-      title: 'Über UrlList',
-      description1: 'UrlList ist ein einfaches Tool zum Bündeln und Teilen mehrerer URLs über einen einzigen, teilbaren Link.',
+      title: 'Über thesharing.link',
+      description1: 'thesharing.link ist ein einfaches Tool zum Bündeln und Teilen mehrerer URLs über einen einzigen, teilbaren Link.',
       description2: 'Perfekt zum Teilen von Sammlungen mit Ressourcen, Artikeln, Tools oder beliebigen Linkgruppen mit Freunden, Kollegen oder Ihrem Publikum.',
       description3: 'Keine Anmeldung erforderlich - einfach Ihr Bundle erstellen und sofort teilen!',
       builtWith: 'Erstellt mit React, TypeScript und Tailwind CSS',
@@ -456,11 +456,11 @@ const translations: Record<Language, Translations> = {
       title: 'Nutzungsbedingungen',
       acceptance: {
         title: '1. Annahme der Bedingungen',
-        content: 'Durch die Nutzung von UrlList stimmen Sie diesen Nutzungsbedingungen zu. Wenn Sie nicht zustimmen, nutzen Sie unseren Dienst bitte nicht.',
+        content: 'Durch die Nutzung von thesharing.link stimmen Sie diesen Nutzungsbedingungen zu. Wenn Sie nicht zustimmen, nutzen Sie unseren Dienst bitte nicht.',
       },
       service: {
         title: '2. Leistungsbeschreibung',
-        content: 'UrlList ermöglicht es Benutzern, Sammlungen von URLs zu erstellen und über einen einzigen Link zu teilen. Der Dienst wird ohne jegliche Gewährleistung angeboten.',
+        content: 'thesharing.link ermöglicht es Benutzern, Sammlungen von URLs zu erstellen und über einen einzigen Link zu teilen. Der Dienst wird ohne jegliche Gewährleistung angeboten.',
       },
       responsibilities: {
         title: '3. Verantwortlichkeiten des Nutzers',
@@ -472,7 +472,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. Haftungsbeschränkung',
-        content: 'UrlList wird ohne Gewährleistung angeboten. Wir übernehmen keine Haftung für Schäden, die aus der Nutzung des Dienstes entstehen.',
+        content: 'thesharing.link wird ohne Gewährleistung angeboten. Wir übernehmen keine Haftung für Schäden, die aus der Nutzung des Dienstes entstehen.',
       },
       changes: {
         title: '6. Änderungen der Bedingungen',
@@ -492,7 +492,7 @@ const translations: Record<Language, Translations> = {
       terms: 'Termos',
     },
     main: {
-      title: 'UrlList',
+      title: 'thesharing.link',
       subtitle: 'Agrupe e Compartilhe Múltiplos Links',
       addLinks: 'Adicionar Links',
       addLinksDescription: 'Digite uma URL e pressione Enter para adicionar ao seu pacote',
@@ -529,7 +529,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Pacote de Links',
       backToEditor: 'Voltar ao editor',
       created: 'Criado',
-      madeWith: 'Feito com',
+      madeWith: 'Feito com thesharing.link',
     },
     errors: {
       invalidUrl: 'Por favor, insira uma URL válida',
@@ -539,8 +539,8 @@ const translations: Record<Language, Translations> = {
       loadingBundle: 'Carregando pacote...',
     },
     about: {
-      title: 'Sobre o UrlList',
-      description1: 'UrlList é uma ferramenta simples para agrupar e compartilhar múltiplas URLs através de um único link compartilhável.',
+      title: 'Sobre o thesharing.link',
+      description1: 'thesharing.link é uma ferramenta simples para agrupar e compartilhar múltiplas URLs através de um único link compartilhável.',
       description2: 'Perfeito para compartilhar coleções de recursos, artigos, ferramentas ou qualquer grupo de links com amigos, colegas ou seu público.',
       description3: 'Não é necessário cadastro - basta criar seu pacote e compartilhar instantaneamente!',
       builtWith: 'Construído com React, TypeScript e Tailwind CSS',
@@ -550,11 +550,11 @@ const translations: Record<Language, Translations> = {
       title: 'Termos de Serviço',
       acceptance: {
         title: '1. Aceitação dos Termos',
-        content: 'Ao usar o UrlList, você concorda com estes termos de serviço. Se você não concordar, por favor, não use nosso serviço.',
+        content: 'Ao usar o thesharing.link, você concorda com estes termos de serviço. Se você não concordar, por favor, não use nosso serviço.',
       },
       service: {
         title: '2. Descrição do Serviço',
-        content: 'O UrlList permite que os usuários criem pacotes de URLs e os compartilhem através de um único link. O serviço é fornecido como está, sem garantias.',
+        content: 'O thesharing.link permite que os usuários criem pacotes de URLs e os compartilhem através de um único link. O serviço é fornecido como está, sem garantias.',
       },
       responsibilities: {
         title: '3. Responsabilidades do Usuário',
@@ -566,7 +566,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. Limitação de Responsabilidade',
-        content: 'O UrlList é fornecido sem garantia. Não somos responsáveis por quaisquer danos decorrentes do uso do serviço.',
+        content: 'O thesharing.link é fornecido sem garantia. Não somos responsáveis por quaisquer danos decorrentes do uso do serviço.',
       },
       changes: {
         title: '6. Alterações nos Termos',
@@ -586,7 +586,7 @@ const translations: Record<Language, Translations> = {
       terms: '利用規約',
     },
     main: {
-      title: 'UrlList',
+      title: 'thesharing.link',
       subtitle: '複数のURLをまとめて共有',
       addLinks: 'リンクを追加',
       addLinksDescription: 'URLを入力してEnterキーを押すと、バンドルに追加されます',
@@ -623,7 +623,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'リンクバンドル',
       backToEditor: 'エディターに戻る',
       created: '作成日',
-      madeWith: '作成ツール',
+      madeWith: 'thesharing.link で作成',
     },
     errors: {
       invalidUrl: '有効なURLを入力してください',
@@ -633,8 +633,8 @@ const translations: Record<Language, Translations> = {
       loadingBundle: 'バンドルを読み込み中...',
     },
     about: {
-      title: 'UrlListについて',
-      description1: 'UrlListは、複数のURLを1つの共有可能なリンクでまとめて共有できるシンプルなツールです。',
+      title: 'thesharing.linkについて',
+      description1: 'thesharing.linkは、複数のURLを1つの共有可能なリンクでまとめて共有できるシンプルなツールです。',
       description2: 'リソース、記事、ツール、または任意のリンクのコレクションを友人、同僚、または視聴者と共有するのに最適です。',
       description3: '登録不要 - バンドルを作成してすぐに共有できます！',
       builtWith: 'React、TypeScript、Tailwind CSSで構築',
@@ -644,11 +644,11 @@ const translations: Record<Language, Translations> = {
       title: '利用規約',
       acceptance: {
         title: '1. 利用規約の同意',
-        content: 'UrlListをご利用いただくことで、これらの利用規約に同意いただいたものとみなされます。同意いただけない場合は、当サービスをご利用いただけません。',
+        content: 'thesharing.linkをご利用いただくことで、これらの利用規約に同意いただいたものとみなされます。同意いただけない場合は、当サービスをご利用いただけません。',
       },
       service: {
         title: '2. サービスの説明',
-        content: 'UrlListは、ユーザーがURLのバンドルを作成し、1つのリンクで共有できるようにするサービスです。本サービスは現状のまま提供され、いかなる保証もありません。',
+        content: 'thesharing.linkは、ユーザーがURLのバンドルを作成し、1つのリンクで共有できるようにするサービスです。本サービスは現状のまま提供され、いかなる保証もありません。',
       },
       responsibilities: {
         title: '3. ユーザーの責任',
@@ -660,7 +660,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. 責任の制限',
-        content: 'UrlListは無保証で提供されます。当社は、本サービスの利用に起因するいかなる損害についても責任を負いません。',
+        content: 'thesharing.linkは無保証で提供されます。当社は、本サービスの利用に起因するいかなる損害についても責任を負いません。',
       },
       changes: {
         title: '6. 規約の変更',
@@ -680,7 +680,7 @@ const translations: Record<Language, Translations> = {
       terms: '이용약관',
     },
     main: {
-      title: 'UrlList',
+      title: 'thesharing.link',
       subtitle: '여러 링크를 한 번에 공유하세요',
       addLinks: '링크 추가',
       addLinksDescription: 'URL을 입력하고 엔터를 눌러 번들에 추가하세요',
@@ -717,7 +717,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: '링크 번들',
       backToEditor: '편집기로 돌아가기',
       created: '생성일',
-      madeWith: '제작',
+      madeWith: 'thesharing.link로 제작',
     },
     errors: {
       invalidUrl: '유효한 URL을 입력해주세요',
@@ -727,8 +727,8 @@ const translations: Record<Language, Translations> = {
       loadingBundle: '번들 불러오는 중...',
     },
     about: {
-      title: 'UrlList 소개',
-      description1: 'UrlList는 여러 URL을 하나의 공유 가능한 링크로 모아주는 간단한 도구입니다.',
+      title: 'thesharing.link 소개',
+      description1: 'thesharing.link는 여러 URL을 하나의 공유 가능한 링크로 모아주는 간단한 도구입니다.',
       description2: '리소스, 기사, 도구 또는 모든 종류의 링크 모음을 친구, 동료 또는 팔로워들과 공유하기에 완벽합니다.',
       description3: '가입 없이도 바로 사용 가능 - 지금 바로 번들을 만들어 공유해보세요!',
       builtWith: 'React, TypeScript, Tailwind CSS로 제작됨',
@@ -738,11 +738,11 @@ const translations: Record<Language, Translations> = {
       title: '이용약관',
       acceptance: {
         title: '1. 약관 동의',
-        content: 'UrlList를 사용함으로써 귀하는 본 이용약관에 동의하는 것으로 간주됩니다. 동의하지 않으시면 서비스를 이용하실 수 없습니다.',
+        content: 'thesharing.link를 사용함으로써 귀하는 본 이용약관에 동의하는 것으로 간주됩니다. 동의하지 않으시면 서비스를 이용하실 수 없습니다.',
       },
       service: {
         title: '2. 서비스 설명',
-        content: 'UrlList는 사용자가 여러 URL을 하나의 링크로 묶어 공유할 수 있게 해주는 서비스입니다. 본 서비스는 있는 그대로 제공되며 어떠한 보증도 제공하지 않습니다.',
+        content: 'thesharing.link는 사용자가 여러 URL을 하나의 링크로 묶어 공유할 수 있게 해주는 서비스입니다. 본 서비스는 있는 그대로 제공되며 어떠한 보증도 제공하지 않습니다.',
       },
       responsibilities: {
         title: '3. 사용자 책임',
@@ -754,7 +754,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. 책임 제한',
-        content: 'UrlList는 어떠한 보증 없이 제공됩니다. 당사는 본 서비스 사용으로 인해 발생하는 어떠한 손해에 대해서도 책임을 지지 않습니다.',
+        content: 'thesharing.link는 어떠한 보증 없이 제공됩니다. 당사는 본 서비스 사용으로 인해 발생하는 어떠한 손해에 대해서도 책임을 지지 않습니다.',
       },
       changes: {
         title: '6. 약관 변경',
@@ -774,7 +774,7 @@ const translations: Record<Language, Translations> = {
       terms: '服务条款',
     },
     main: {
-      title: '链接集合',
+      title: 'thesharing.link',
       subtitle: '批量分享多个链接',
       addLinks: '添加链接',
       addLinksDescription: '输入网址并按回车键添加到集合',
@@ -808,10 +808,10 @@ const translations: Record<Language, Translations> = {
       removeLink: '删除链接',
     },
     viewer: {
-      linkBundle: '链接集合',
+      linkBundle: 'thesharing.link',
       backToEditor: '返回编辑器',
       created: '创建于',
-      madeWith: '使用',
+      madeWith: '使用 thesharing.link',
     },
     errors: {
       invalidUrl: '请输入有效的网址',
@@ -822,7 +822,7 @@ const translations: Record<Language, Translations> = {
     },
     about: {
       title: '关于链接集合',
-      description1: '链接集合是一个简单工具，可将多个网址合并为一个可分享的链接。',
+      description1: 'thesharing.link 是一个简单工具，可将多个网址合并为一个可分享的链接。',
       description2: '非常适合与朋友、同事或关注者分享资源、文章、工具或任何链接集合。',
       description3: '无需注册 - 立即创建并分享您的链接集合！',
       builtWith: '使用 React、TypeScript 和 Tailwind CSS 构建',
@@ -832,11 +832,11 @@ const translations: Record<Language, Translations> = {
       title: '服务条款',
       acceptance: {
         title: '1. 条款接受',
-        content: '使用链接集合即表示您同意本服务条款。如果您不同意，请不要使用我们的服务。',
+        content: '使用 thesharing.link 即表示您同意本服务条款。如果您不同意，请不要使用我们的服务。',
       },
       service: {
         title: '2. 服务说明',
-        content: '链接集合允许用户创建网址集合并通过单个链接分享。本服务按"原样"提供，不提供任何形式的保证。',
+        content: 'thesharing.link 允许用户创建网址集合并通过单个链接分享。本服务按"原样"提供，不提供任何形式的保证。',
       },
       responsibilities: {
         title: '3. 用户责任',
@@ -848,7 +848,7 @@ const translations: Record<Language, Translations> = {
       },
       liability: {
         title: '5. 责任限制',
-        content: '链接集合不提供任何保证。对于因使用本服务而产生的任何损害，我们不承担任何责任。',
+        content: 'thesharing.link 不提供任何保证。对于因使用本服务而产生的任何损害，我们不承担任何责任。',
       },
       changes: {
         title: '6. 条款变更',
