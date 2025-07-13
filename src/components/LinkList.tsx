@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { GripVertical, ExternalLink, X } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { decodeHtmlEntities } from '../utils/htmlUtils';
 import type { LinkItem } from '../types';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface LinkListProps {
   links: LinkItem[];
@@ -12,48 +13,33 @@ interface LinkListProps {
 
 export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps) {
   const { t } = useTranslation();
-  const [draggedItem, setDraggedItem] = useState<string | null>(null);
-  const [dragOverItem, setDragOverItem] = useState<string | null>(null);
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  const [draggingId, setDraggingId] = useState<string | null>(null);
 
-  const handleDragStart = (e: React.DragEvent, linkId: string) => {
-    setDraggedItem(linkId);
-    e.dataTransfer.effectAllowed = 'move';
-  };
+  // Handle reordering with Framer Motion
+  const handleDragEnd = (linkId: string, info: any) => {
+    setDraggingId(null);
 
-  const handleDragOver = (e: React.DragEvent, linkId: string) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOverItem(linkId);
-  };
+    // Find the position where the item was dropped
+    const draggedIndex = links.findIndex(link => link.id === linkId);
+    if (draggedIndex === -1) return;
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOverItem(null);
-  };
+    // Calculate the new position based on the drag distance
+    const dragDistance = info.offset.y;
+    const itemHeight = 80; // Approximate height of each item in pixels
+    const positionChange = Math.round(dragDistance / itemHeight);
 
-  const handleDrop = (e: React.DragEvent, targetId: string) => {
-    e.preventDefault();
+    if (positionChange === 0) return; // No change in position
 
-    if (!draggedItem || draggedItem === targetId) return;
+    const newIndex = Math.max(0, Math.min(links.length - 1, draggedIndex + positionChange));
+    if (newIndex === draggedIndex) return; // No change in position
 
-    const draggedIndex = links.findIndex(link => link.id === draggedItem);
-    const targetIndex = links.findIndex(link => link.id === targetId);
-
-    if (draggedIndex === -1 || targetIndex === -1) return;
-
+    // Create a new array with the reordered items
     const newLinks = [...links];
     const [movedItem] = newLinks.splice(draggedIndex, 1);
-    newLinks.splice(targetIndex, 0, movedItem);
+    newLinks.splice(newIndex, 0, movedItem);
 
     onReorderLinks(newLinks);
-    setDraggedItem(null);
-    setDragOverItem(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedItem(null);
-    setDragOverItem(null);
   };
 
   const handleImageError = (linkId: string) => {
@@ -72,9 +58,6 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
     // Check if this looks like an OG image (typically larger)
     return link.ogImage && link.favicon === link.ogImage && !imageErrors.has(link.id);
   };
-
-  // Helper function to decode HTML entities
-
 
   if (links.length === 0) {
     return (
@@ -96,81 +79,86 @@ export function LinkList({ links, onReorderLinks, onRemoveLink }: LinkListProps)
       </div>
 
       <div className="space-y-2">
-        {links.map((link) => (
-          <div
-            key={link.id}
-            draggable
-            onDragStart={(e) => handleDragStart(e, link.id)}
-            onDragOver={(e) => handleDragOver(e, link.id)}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, link.id)}
-            onDragEnd={handleDragEnd}
-            className={`group flex items-center space-x-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 ${draggedItem === link.id ? 'opacity-50 scale-95' : ''
-              } ${dragOverItem === link.id ? 'border-teal-500 shadow-lg' : 'hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600'
-              }`}
-          >
-            {/* Drag Handle */}
-            <button className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-              <GripVertical className="w-4 h-4" />
-            </button>
-
-            {/* Image/Favicon */}
-            <div className="flex-shrink-0">
-              {isLargeImage(link) ? (
-                <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                  <img
-                    src={getImageSrc(link)}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={() => handleImageError(link.id)}
-                  />
-                </div>
-              ) : (
-                <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                  <img
-                    src={getImageSrc(link)}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={() => handleImageError(link.id)}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-gray-900 dark:text-white truncate">
-                {decodeHtmlEntities(link.title)}
-              </h4>
-              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                {decodeHtmlEntities(link.description || link.url)}
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
-                {link.url}
-              </p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-1 text-gray-400 hover:text-teal-500 transition-colors"
-                title={t.links.openLink}
-              >
-                <ExternalLink className="w-4 h-4" />
-              </a>
-              <button
-                onClick={() => onRemoveLink(link.id)}
-                className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                title={t.links.removeLink}
-              >
-                <X className="w-4 h-4" />
+        <AnimatePresence mode="popLayout">
+          {links.map((link) => (
+            <motion.div
+              key={link.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30, ease: 'easeInOut' }} // Smoother spring with easing
+              layout
+              drag="y"
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={0.2} // Slightly higher for smoother drag feel
+              dragMomentum={false}
+              onDragStart={() => setDraggingId(link.id)}
+              onDragEnd={(_, info) => handleDragEnd(link.id, info)}
+              className={`group flex items-center space-x-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 ${draggingId === link.id ? 'z-10 shadow-lg border-teal-500' : 'hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600'}`}
+            >
+              {/* Drag Handle */}
+              <button className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <GripVertical className="w-4 h-4" />
               </button>
-            </div>
-          </div>
-        ))}
+
+              {/* Image/Favicon */}
+              <div className="flex-shrink-0">
+                {isLargeImage(link) ? (
+                  <div className="w-16 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <img
+                      src={getImageSrc(link)}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={() => handleImageError(link.id)}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 rounded overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <img
+                      src={getImageSrc(link)}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={() => handleImageError(link.id)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-gray-900 dark:text-white truncate">
+                  {decodeHtmlEntities(link.title)}
+                </h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                  {decodeHtmlEntities(link.description || link.url)}
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
+                  {link.url}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 text-gray-400 hover:text-teal-500 transition-colors"
+                  title={t.links.openLink}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => onRemoveLink(link.id)}
+                  className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                  title={t.links.removeLink}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
