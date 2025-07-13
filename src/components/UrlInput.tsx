@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Loader2 } from 'lucide-react';
-import { isValidUrl, fetchUrlMetadata, generateId } from '../utils/urlUtils';
+import { isValidUrl, normalizeUrl, fetchUrlMetadata, generateId } from '../utils/urlUtils';
 import { useTranslation } from '../hooks/useTranslation';
 import type { LinkItem } from '../types';
 
@@ -13,33 +13,96 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [preliminaryData, setPreliminaryData] = useState<Partial<LinkItem> | null>(null);
+
+  // Handle URL input changes with debounce for preliminary data
+  useEffect(() => {
+    // Clear preliminary data when URL is empty
+    if (!url.trim()) {
+      setPreliminaryData(null);
+      return;
+    }
+    
+    // Normalize and validate URL
+    const normalizedUrl = normalizeUrl(url.trim());
+    if (!isValidUrl(normalizedUrl)) {
+      setPreliminaryData(null);
+      return;
+    }
+    
+    // Set a small timeout to avoid fetching on every keystroke
+    const timer = setTimeout(() => {
+      // Only fetch preliminary data if URL is valid
+      fetchUrlMetadata(normalizedUrl, ({ preliminaryData }) => {
+        if (preliminaryData) {
+          setPreliminaryData(preliminaryData);
+        }
+      });
+    }, 300); // 300ms debounce
+    
+    return () => clearTimeout(timer);
+  }, [url]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!url.trim()) return;
-
-    if (!isValidUrl(url.trim())) {
+    
+    // Normalize the URL first (add https:// if missing)
+    const normalizedUrl = normalizeUrl(url.trim());
+    
+    // Then validate the normalized URL
+    if (!isValidUrl(normalizedUrl)) {
       setError(t.errors.invalidUrl);
       return;
     }
 
     setIsLoading(true);
     setError('');
-
-    try {
-      const metadata = await fetchUrlMetadata(url.trim());
-      const newLink: LinkItem = {
+    
+    // If we already have preliminary data, add it immediately
+    if (preliminaryData) {
+      const preliminaryLink: LinkItem = {
         id: generateId(),
-        url: metadata.url || url.trim(),
-        title: metadata.title || 'Untitled',
-        description: metadata.description || '',
-        favicon: metadata.favicon || '',
+        url: preliminaryData.url || normalizedUrl,
+        title: preliminaryData.title || 'Loading...',
+        description: preliminaryData.description || 'Fetching details...',
+        favicon: preliminaryData.favicon || '',
         addedAt: new Date()
       };
+      
+      // Add the preliminary link immediately for better UX
+      onAddLink(preliminaryLink);
+    }
 
-      onAddLink(newLink);
+    try {
+      // Fetch the full metadata with the callback for loading state changes
+      await fetchUrlMetadata(normalizedUrl, ({ isLoading, preliminaryData }) => {
+        // This callback will be called with loading state updates
+        if (!isLoading && preliminaryData) {
+          // When loading is complete, update the link with final data
+          const finalLink: LinkItem = {
+            id: generateId(),
+            url: preliminaryData.url || normalizedUrl,
+            title: preliminaryData.title || 'Untitled',
+            description: preliminaryData.description || '',
+            favicon: preliminaryData.favicon || '',
+            ogImage: preliminaryData.ogImage,
+            addedAt: new Date(),
+            wasRedirected: preliminaryData.wasRedirected,
+            originalUrl: preliminaryData.originalUrl
+          };
+          
+          // Only add the link if we didn't already add a preliminary version
+          if (!preliminaryData) {
+            onAddLink(finalLink);
+          }
+        }
+      });
+      
+      // Clear the input after successful submission
       setUrl('');
+      setPreliminaryData(null);
     } catch (err) {
       setError(t.errors.fetchFailed);
       console.error('Error adding link:', err);
@@ -77,6 +140,22 @@ export function UrlInput({ onAddLink }: UrlInputProps) {
 
       {error && (
         <p className="text-sm text-red-500 dark:text-red-400">{error}</p>
+      )}
+      
+      {preliminaryData && !error && (
+        <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md">
+          <div className="flex items-center">
+            {preliminaryData.favicon && (
+              <img src={preliminaryData.favicon} alt="" className="w-4 h-4 mr-2" />
+            )}
+            <span className="text-sm font-medium">{preliminaryData.title}</span>
+          </div>
+          {preliminaryData.description && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+              {preliminaryData.description}
+            </p>
+          )}
+        </div>
       )}
     </div>
   );

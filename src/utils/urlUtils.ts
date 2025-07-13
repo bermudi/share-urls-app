@@ -17,10 +17,39 @@ export function normalizeUrl(url: string): string {
   return url;
 }
 
-export async function fetchUrlMetadata(url: string): Promise<Partial<LinkItem>> {
+/**
+ * Fetches metadata for a URL with immediate loading state
+ * @param url The URL to fetch metadata for
+ * @param onLoadingStateChange Optional callback for loading state changes
+ * @returns Promise resolving to partial LinkItem with metadata
+ */
+export async function fetchUrlMetadata(
+  url: string, 
+  onLoadingStateChange?: (state: { isLoading: boolean, url: string, preliminaryData?: Partial<LinkItem> }) => void
+): Promise<Partial<LinkItem>> {
   const normalizedUrl = normalizeUrl(url);
+  
+  // Immediately return preliminary data for valid URLs
+  if (isValidUrl(normalizedUrl)) {
+    const domain = new URL(normalizedUrl).hostname;
+    const preliminaryData: Partial<LinkItem> = {
+      url: normalizedUrl,
+      title: `Loading ${domain}...`,
+      description: 'Fetching page information...',
+      favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
+    };
+    
+    // Notify about loading state with preliminary data
+    onLoadingStateChange?.({ isLoading: true, url: normalizedUrl, preliminaryData });
+    
+    // Return preliminary data immediately if requested
+    return preliminaryData;
+  }
 
   try {
+    // Notify that we're starting the actual fetch
+    onLoadingStateChange?.({ isLoading: true, url: normalizedUrl });
+    
     // Use our Supabase edge function to fetch metadata
     const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-metadata`, {
       method: 'POST',
@@ -43,13 +72,21 @@ export async function fetchUrlMetadata(url: string): Promise<Partial<LinkItem>> 
 
 
 
-    return {
+    // Handle redirects from the edge function
+    const finalData = {
       url: metadata.url,
       title: decodeHtmlEntities(metadata.title),
       description: decodeHtmlEntities(metadata.description),
       favicon: metadata.favicon,
-      ogImage: metadata.ogImage
+      ogImage: metadata.ogImage,
+      originalUrl: metadata.originalUrl,
+      wasRedirected: metadata.wasRedirected
     };
+    
+    // Notify that loading is complete with the final data
+    onLoadingStateChange?.({ isLoading: false, url: normalizedUrl, preliminaryData: finalData });
+    
+    return finalData;
   } catch (error) {
     console.warn('Failed to fetch metadata for:', url, error);
 
@@ -60,12 +97,17 @@ export async function fetchUrlMetadata(url: string): Promise<Partial<LinkItem>> 
     // Enhanced domain-specific metadata
     const domainMetadata = getDomainSpecificMetadata(domain);
 
-    return {
+    const fallbackData = {
       url: normalizedUrl,
       title: domainMetadata.title || domain,
       description: domainMetadata.description || 'Web page',
       favicon: fallbackFavicon
     };
+    
+    // Notify that loading failed but we have fallback data
+    onLoadingStateChange?.({ isLoading: false, url: normalizedUrl, preliminaryData: fallbackData });
+    
+    return fallbackData;
   }
 }
 
