@@ -62,10 +62,8 @@ export function Header({ theme, onThemeChange, onNewBundle, hasProgress = false 
             {/* Logo */}
             <div className="flex items-center space-x-4">
               <a href="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-teal-400 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xs">the</span>
-                </div>
-                <span className="text-xl font-semibold text-gray-900 dark:text-white">sharing.link</span>
+                <img src="/images/logo.webp" alt="thesharing.link logo" className="w-8 h-8" />
+                <span className="text-xl font-semibold text-gray-900 dark:text-white">thesharing.link</span>
               </a>
             </div>
 
