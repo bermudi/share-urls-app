@@ -13,6 +13,8 @@ interface MetadataResponse {
   description: string;
   favicon: string;
   ogImage: string | null;
+  originalUrl?: string; // Original URL before redirects
+  wasRedirected?: boolean; // Flag indicating if the URL was redirected
 }
 
 interface ErrorResponse {
@@ -108,18 +110,29 @@ serve(async (req) => {
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
     try {
-      // Fetch the page with timeout
+      // Fetch the page with timeout and follow redirects
       const response = await fetch(targetUrl.href, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; UrlList-Bot/1.0)',
         },
-        signal: controller.signal
+        signal: controller.signal,
+        redirect: 'follow' // Explicitly follow redirects
       });
       
       clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
+      }
+      
+      // Handle redirects - if the final URL is different from the requested URL
+      const finalUrl = response.url;
+      const wasRedirected = finalUrl !== targetUrl.href;
+      
+      if (wasRedirected) {
+        logger.info('URL was redirected', { originalUrl: targetUrl.href, finalUrl });
+        // Update the target URL to the final URL after redirects
+        targetUrl = new URL(finalUrl);
       }
       
       // Limit HTML size to 1MB to prevent DoS from large pages
@@ -227,7 +240,9 @@ serve(async (req) => {
       title: title || targetUrl.hostname,
       description: description || 'Web page',
       favicon,
-      ogImage: ogImage || null
+      ogImage: ogImage || null,
+      originalUrl: wasRedirected ? url : undefined, // Include the original URL if redirected
+      wasRedirected: wasRedirected || undefined // Flag indicating if the URL was redirected
     };
     
     logger.info('Successfully fetched metadata', { url: targetUrl.href });
