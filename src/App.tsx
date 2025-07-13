@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 import { UrlInput } from './components/UrlInput';
 import { LinkList } from './components/LinkList';
 import { BundleSettings } from './components/BundleSettings';
@@ -413,7 +414,10 @@ function AppContent() {
 function App() {
   return (
     <LanguageProvider>
-      <AppContent />
+      <div className="min-h-screen flex flex-col">
+        <AppContent />
+        <Footer />
+      </div>
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
