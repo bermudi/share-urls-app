@@ -20,9 +20,15 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
   const getImageSrc = (link: typeof bundle.links[0]) => {
     if (imageErrors.has(link.id)) {
       // Fallback to Google favicon service
-      return `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+      try {
+        if (!link.url) return 'https://www.google.com/s2/favicons?domain=example.com&sz=32';
+        const hostname = new URL(link.url).hostname;
+        return `https://www.google.com/s2/favicons?domain=${hostname || 'example.com'}&sz=32`;
+      } catch (error) {
+        return 'https://www.google.com/s2/favicons?domain=example.com&sz=32';
+      }
     }
-    return link.favicon;
+    return link.favicon || 'https://www.google.com/s2/favicons?domain=example.com&sz=32';
   };
 
   const isLargeImage = (link: typeof bundle.links[0]) => {
@@ -105,7 +111,15 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                     {decodeHtmlEntities(link.title || link.url)}
                   </h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                    {new URL(link.url).hostname.replace('www.', '')}
+                    {(() => {
+                      try {
+                        if (!link.url) return '';
+                        const hostname = new URL(link.url).hostname;
+                        return hostname ? hostname.replace('www.', '') : '';
+                      } catch (error) {
+                        return link.url || '';
+                      }
+                    })()}
                   </p>
                 </div>
 
@@ -120,7 +134,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
           {/* Footer */}
           <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              {t.viewer.linksCount.replace('{count}', bundle.links.length.toString())}
+              {`${bundle.links.length} ${bundle.links.length === 1 ? 'link' : 'links'}`}
             </p>
           </div>
 
@@ -132,7 +146,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                 href="/"
                 className="text-teal-500 hover:text-teal-600 transition-colors font-medium"
               >
-                UrlList
+                thesharing.link
               </a>
             </p>
           </div>

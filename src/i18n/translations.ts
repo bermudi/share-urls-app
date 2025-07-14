@@ -154,7 +154,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Link Bundle',
       backToEditor: 'Back to editor',
       created: 'Created',
-      madeWith: 'Made with thesharing.link',
+      madeWith: 'Made with ',
     },
     errors: {
       invalidUrl: 'Please enter a valid URL',
@@ -247,7 +247,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Paquete de Enlaces',
       backToEditor: 'Volver al editor',
       created: 'Creado',
-      madeWith: 'Hecho con thesharing.link',
+      madeWith: 'Hecho con ',
     },
     errors: {
       invalidUrl: 'Por favor ingresa una URL válida',
@@ -341,7 +341,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Collection de Liens',
       backToEditor: 'Retour à l\'éditeur',
       created: 'Créé',
-      madeWith: 'Fait avec thesharing.link',
+      madeWith: 'Fait avec ',
     },
     errors: {
       invalidUrl: 'Veuillez entrer une URL valide',
@@ -435,7 +435,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Link-Bundle',
       backToEditor: 'Zurück zum Editor',
       created: 'Erstellt',
-      madeWith: 'Erstellt mit thesharing.link',
+      madeWith: 'Erstellt mit ',
     },
     errors: {
       invalidUrl: 'Bitte geben Sie eine gültige URL ein',
@@ -529,7 +529,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'Pacote de Links',
       backToEditor: 'Voltar ao editor',
       created: 'Criado',
-      madeWith: 'Feito com thesharing.link',
+      madeWith: 'Feito com ',
     },
     errors: {
       invalidUrl: 'Por favor, insira uma URL válida',
@@ -623,7 +623,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'リンクバンドル',
       backToEditor: 'エディターに戻る',
       created: '作成日',
-      madeWith: 'thesharing.link で作成',
+      madeWith: '作成',
     },
     errors: {
       invalidUrl: '有効なURLを入力してください',
@@ -717,7 +717,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: '링크 번들',
       backToEditor: '편집기로 돌아가기',
       created: '생성일',
-      madeWith: 'thesharing.link로 제작',
+      madeWith: '제작',
     },
     errors: {
       invalidUrl: '유효한 URL을 입력해주세요',
@@ -811,7 +811,7 @@ const translations: Record<Language, Translations> = {
       linkBundle: 'thesharing.link',
       backToEditor: '返回编辑器',
       created: '创建于',
-      madeWith: '使用 thesharing.link',
+      madeWith: '使用 ',
     },
     errors: {
       invalidUrl: '请输入有效的网址',
