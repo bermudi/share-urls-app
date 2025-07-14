@@ -1,11 +1,11 @@
 # 🔗 thesharing.link - Bundle and Share Multiple URLs
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.0.4-purple.svg)](https://vitejs.dev/)
-[![Supabase](https://img.shields.io/badge/Supabase-2.50.5-green.svg)](https://supabase.io/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.17-38B2AC.svg)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)\
+[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)\
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)\
+[![Vite](https://img.shields.io/badge/Vite-7.0.4-purple.svg)](https://vitejs.dev/)\
+[![Supabase](https://img.shields.io/badge/Supabase-2.50.5-green.svg)](https://supabase.io/)\
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.17-38B2AC.svg)](https://tailwindcss.com/)\
 [![Framer Motion](https://img.shields.io/badge/Framer%20Motion-12.23.3-ff69b4.svg)](https://www.framer.com/motion/)
 
 
