@@ -1,4 +1,12 @@
-w# 🔗 URL Bundler - Share Multiple Links with One URL
+# 🔗 thesharing.link - Bundle and Share Multiple URLs
+
+
+[![License: MIT](https://pfst.cf2.poecdn.net/base/image/2c89badab92b5ee0afea1a6328677fab597eaa5d90b21f6a29384f9eaac3cbc0?pmaid=419939684)](https://opensource.org/licenses/MIT)\
+[![React](https://pfst.cf2.poecdn.net/base/image/1b6c0580b298367d92eb18486fdf53c6723781465d6adafa52fe015eb28e9ab2?pmaid=419939695)](https://reactjs.org/)\
+[![TypeScript](https://pfst.cf2.poecdn.net/base/image/876ce089cac37c5e2f6a8f250ad8ce7cac3d6d7d2dd8966608d436faa9358416?pmaid=419939699)](https://www.typescriptlang.org/)\
+[![Vite](https://pfst.cf2.poecdn.net/base/image/ff0cdb7940e81216ea0a92c2a685dd60a341f0f3713e7023f429066c350e426d?pmaid=419939709)](https://vitejs.dev/)\
+[![Supabase](https://pfst.cf2.poecdn.net/base/image/2023841e9daa7ee2768ff7a244263c4e3fa652f9a06722867a3ccc96466427f6?pmaid=419939710)](https://supabase.com/)
+
 
 A modern, elegant web application for creating and sharing collections of URLs through a single shareable link. Perfect for curating resources, sharing reading lists, or organizing links for projects and presentations.
 
@@ -6,55 +14,68 @@ A modern, elegant web application for creating and sharing collections of URLs t
 
 - **No Sign-up Required** - Create and share bundles instantly without registration
 - **Custom Vanity URLs** - Create memorable, branded links (e.g., `yourdomain.com/my-resources`)
-- **Rich Link Previews** - Automatically fetches titles, descriptions, and favicons
-- **Drag & Drop Reordering** - Easily organize your links in the perfect order
-- **Dark/Light Theme** - Beautiful interface that adapts to your preference
+- **Rich Link Previews** - Automatically fetches titles, descriptions, favicons, and OG images
+- **Drag & Drop Reordering** - Easily organize your links with smooth animations
+- **Dark/Light/System Theme** - Beautiful interface that adapts to your preference
 - **Mobile Responsive** - Works seamlessly on all devices
 - **Instant Publishing** - Share your bundles with a single click
 - **Public Access** - Published bundles are accessible to anyone with the link
-- **Multi-language Support** - Built-in internationalization support
+- **Multi-language Support** - Built-in internationalization with 8 languages (English, Spanish, French, German, Portuguese, Japanese, Korean, Chinese)
+- **Remix Functionality** - Easily remix existing bundles to create new ones
+- **Local Storage Persistence** - Save your work-in-progress bundles locally
 
 ## 🚀 Live Demo
 
-Visit [URL Bundler](https://your-app-url.vercel.app) to try it out!
+Visit [thesharing.link](https://thesharing.link) to try it out! (Replace with actual deployment URL if available)
 
 ## 🏗️ Project Structure
 
 ```
 src/
 ├── components/         # Reusable UI components
-│   ├── BundleSettings.tsx  # Bundle configuration options
+│   ├── BundleSettings.tsx  # Bundle configuration (vanity URL, description)
 │   ├── BundleViewer.tsx    # View-only mode for shared bundles
-│   ├── Header.tsx          # Main navigation header
-│   ├── LanguageSelector.tsx # Language switcher
-│   ├── LinkList.tsx        # Displays and manages the list of links
-│   ├── PublishButton.tsx   # Handles bundle publishing
-│   └── UrlInput.tsx        # URL input with validation and preview
-├── contexts/          # React contexts
-│   └── LanguageContext.tsx # Manages application language
-├── hooks/             # Custom React hooks
+│   ├── Footer.tsx          # Application footer
+│   ├── Header.tsx          # Main navigation header with theme/language selectors
+│   ├── LanguageSelector.tsx # Language switcher component
+│   ├── LinkList.tsx        # Draggable list of links with animations
+│   ├── PublishButton.tsx   # Publishing functionality with animations
+│   └── UrlInput.tsx        # URL input with validation and metadata fetching
+├── contexts/           # React contexts
+│   └── LanguageContext.tsx # Manages application language state
+├── hooks/              # Custom React hooks
 │   ├── useLocalStorage.ts  # Persist data in localStorage
-│   ├── useTheme.ts         # Theme management
-│   └── useTranslation.ts   # i18n implementation
-├── i18n/              # Internationalization
-│   └── translations.ts     # Translation strings
-├── lib/               # Third-party library configurations
+│   ├── useTheme.ts         # Theme management (light/dark/system)
+│   └── useTranslation.ts   # i18n hook for translations
+├── i18n/               # Internationalization
+│   └── translations.ts     # Translation strings for all supported languages
+├── lib/                # Third-party library configurations
 │   ├── database.types.ts   # Supabase database types
 │   └── supabase.ts         # Supabase client configuration
-├── types/             # TypeScript type definitions
-│   └── index.ts
-├── utils/             # Utility functions
-│   ├── htmlUtils.ts   # HTML manipulation utilities
-│   └── urlUtils.ts    # URL validation and processing
-├── App.tsx            # Main application component
-└── main.tsx           # Application entry point
+├── types/              # TypeScript type definitions
+│   └── index.ts            # Shared types (LinkItem, Bundle, Theme)
+├── utils/              # Utility functions
+│   ├── htmlUtils.ts        # HTML entity decoding
+│   └── urlUtils.ts         # URL validation, normalization, metadata fetching, ID generation
+├── App.tsx             # Main application component and state management
+├── index.css           # Global CSS with Tailwind
+├── main.tsx            # Application entry point
+└── vite-env.d.ts       # Vite environment types
 
 supabase/
-├── functions/         # Edge functions
-│   └── fetch-metadata/    # Fetches link metadata
-└── migrations/        # Database migrations
-    ├── 20250630155413_dusty_fog.sql  # Initial schema
-    └── 20250630172208_delicate_reef.sql  # Schema updates
+├── functions/          # Edge functions
+│   └── fetch-metadata/     # Serverless function for URL metadata extraction
+└── ...                 # (Migrations and other Supabase configs not included in concat)
+
+Other files:
+├── index.html          # HTML entry with meta tags and theme/language scripts
+├── package.json        # Dependencies and scripts
+├── postcss.config.js   # PostCSS configuration
+├── README.md           # This file
+├── tailwind.config.js  # Tailwind CSS configuration
+├── tsconfig.app.json   # TypeScript config for app
+├── tsconfig.json       # Main TypeScript config
+└── tsconfig.node.json  # TypeScript config for Node/Vite
 ```
 
 ## 🛠️ Technology Stack
@@ -62,39 +83,39 @@ supabase/
 - **Frontend**:
   - React 18 with TypeScript
   - Vite 5.x (Build Tool)
-  - TailwindCSS 3.x (Styling)
-  - React DnD (Drag and Drop)
-  - Lucide Icons
+  - Tailwind CSS 3.x (Styling)
+  - Framer Motion (Animations and transitions)
+  - Lucide React (Icons)
+  - React Toastify (Notifications)
 
 - **Backend**:
-  - Supabase (Authentication, Database, Edge Functions)
-  - PostgreSQL (Database)
-  - Node.js (Edge Functions)
+  - Supabase (Database, Edge Functions)
+  - PostgreSQL (Database via Supabase)
+  - Deno (For edge functions)
 
 - **Development Tools**:
   - ESLint (Code Linting)
   - TypeScript (Type Checking)
-  - PNPM (Package Manager)
+  - NPM (Package Manager)
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ (LTS recommended)
-- PNPM 8.x
 - Supabase account (for backend services)
 
 ### Local Development
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/url-bundler.git
-   cd url-bundler
+   git clone https://github.com/yourusername/thesharing-link.git
+   cd thesharing-link
    ```
 
 2. **Install dependencies**
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. **Set up environment variables**
@@ -106,220 +127,92 @@ supabase/
 
 4. **Start the development server**
    ```bash
-   pnpm dev
+   npm run dev
    ```
    The app will be available at `http://localhost:5173`
 
-## Database Schema
-
-The application uses the following database structure:
-
-### `bundles` table
-- `id` (uuid): Primary key
-- `user_id` (uuid): References auth.users
-- `vanity_url` (text, unique): Custom URL path
-- `title` (text): Bundle title
-- `description` (text): Bundle description
-- `published` (boolean): Whether the bundle is public
-- `created_at` (timestamp)
-- `updated_at` (timestamp)
-
-### `bundle_links` table
-- `id` (uuid): Primary key
-- `bundle_id` (uuid): References bundles.id
-- `url` (text): The shared URL
-- `title` (text): Link title
-- `description` (text): Link description
-- `favicon` (text): URL to favicon
-- `og_image` (text): Open Graph image URL
-- `position` (integer): Sort order
-- `created_at` (timestamp)
-
-## Key Components
-
-### `App.tsx`
-The main application component that manages the application state and routing. It handles:
-- Bundle creation and management
-- View mode toggling (editor/viewer)
-- Loading and saving bundles
-- Theme management
-
-### `UrlInput.tsx`
-Handles URL input with validation and preview generation:
-- Validates URL format
-- Fetches metadata (title, description, favicon)
-- Provides visual feedback during loading
-
-### `LinkList.tsx`
-Manages the list of links in a bundle:
-- Drag and drop reordering
-- Link removal
-- Visual feedback for empty states
-
-### `BundleSettings.tsx`
-Allows users to configure bundle settings:
-- Vanity URL customization
-- Title and description editing
-- Bundle publishing controls
-
-### `BundleViewer.tsx`
-Displays a published bundle in view-only mode:
-- Shows bundle metadata
-- Renders links with previews
-- Handles 404 states
-
-## Internationalization
-
-The application supports multiple languages through the `i18n` system. To add a new language:
-
-1. Add a new language code to the `Language` type in `types/index.ts`
-2. Add translations in `i18n/translations.ts`
-3. The language selector will automatically update to include the new language
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to a GitHub/GitLab/Bitbucket repository
-2. Import the repository to Vercel
-3. Add environment variables:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-4. Deploy!
-
-### Supabase Setup
-
-1. Create a new project at [Supabase](https://supabase.com)
-2. Run the SQL migrations from `supabase/migrations`
-3. Configure Row Level Security (RLS) as per the migration files
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-├── components/          # React components
-│   ├── Header.tsx      # Navigation and theme switcher
-│   ├── UrlInput.tsx    # URL input with metadata fetching
-│   ├── LinkList.tsx    # Draggable list of links
-│   ├── BundleSettings.tsx  # Vanity URL and description
-│   ├── PublishButton.tsx   # Publishing functionality
-│   └── BundleViewer.tsx    # Public bundle display
-├── hooks/              # Custom React hooks
-│   ├── useTheme.ts     # Theme management
-│   └── useLocalStorage.ts  # Local storage utilities
-├── lib/                # External service configurations
-│   ├── supabase.ts     # Supabase client setup
-│   └── database.types.ts   # TypeScript database types
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-│   └── urlUtils.ts     # URL validation and metadata
-└── App.tsx             # Main application component
-
-supabase/
-├── migrations/         # Database schema migrations
-└── functions/          # Edge functions
-    └── fetch-metadata/ # URL metadata fetching service
-```
-
-## 🚀 Deployment
-
-### Netlify Deployment
-
-1. **Build the project:**
+5. **Build for production**
    ```bash
    npm run build
    ```
 
-2. **Deploy to Netlify:**
-   - Connect your repository to Netlify
-   - Set build command: `npm run build`
-   - Set publish directory: `dist`
-   - Add environment variables in Netlify dashboard
+6. **Lint the code**
+   ```bash
+   npm run lint
+   ```
 
-3. **Configure redirects:**
-   The project includes a `_redirects` file for proper SPA routing.
+## Database Schema
 
-### Environment Variables for Production
+The application uses Supabase with the following tables:
 
-Set these in your deployment platform:
+### `bundles` table
+- `id` (uuid): Primary key
+- `user_id` (uuid, nullable): For future auth
+- `vanity_url` (text, unique): Custom URL slug
+- `description` (text): Bundle description
+- `published` (boolean): Publication status
+- `created_at` (timestamptz)
+- `updated_at` (timestamptz)
 
-```env
-VITE_SUPABASE_URL=your_production_supabase_url
-VITE_SUPABASE_ANON_KEY=your_production_supabase_anon_key
-```
+### `bundle_links` table
+- `id` (uuid): Primary key
+- `bundle_id` (uuid): Foreign key to bundles
+- `url` (text): Link URL
+- `title` (text)
+- `description` (text)
+- `favicon` (text)
+- `og_image` (text, nullable)
+- `position` (integer): Order in bundle
+- `created_at` (timestamptz)
 
-## 🗄️ Database Schema
+## Key Components
 
-### Bundles Table
-```sql
-CREATE TABLE bundles (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NULL,  -- Nullable for anonymous users
-  vanity_url text UNIQUE,
-  title text,
-  description text,
-  published boolean DEFAULT false,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
-```
+- **App.tsx**: Core logic for bundle management, viewing, and publishing
+- **BundleViewer.tsx**: Renders public bundles with rich previews
+- **PublishButton.tsx**: Handles publishing with animations and feedback
+- **UrlInput.tsx**: Adds links with metadata fetching and validation
+- **LinkList.tsx**: Draggable list with Framer Motion animations
+- **LanguageContext.tsx**: Manages multi-language support
 
-### Bundle Links Table
-```sql
-CREATE TABLE bundle_links (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  bundle_id uuid REFERENCES bundles(id) ON DELETE CASCADE,
-  url text NOT NULL,
-  title text NOT NULL DEFAULT '',
-  description text DEFAULT '',
-  favicon text DEFAULT '',
-  og_image text,
-  position integer NOT NULL DEFAULT 0,
-  created_at timestamptz DEFAULT now()
-);
-```
+## Internationalization
 
-## 🔒 Security & Privacy
+Supports 8 languages. Translations are in `src/i18n/translations.ts`. Browser language is auto-detected with localStorage persistence.
 
-- **Row Level Security (RLS)** enabled on all tables
-- **Public read access** only for published bundles
-- **No personal data collection** - anonymous usage supported
-- **CORS protection** on API endpoints
-- **Input validation** for URLs and vanity names
+## Deployment
 
-## 🎨 Design Philosophy
+### Vercel/Netlify (Recommended for Frontend)
 
-- **Apple-level aesthetics** with attention to detail
-- **Micro-interactions** and smooth transitions
-- **Consistent 8px spacing system**
-- **Comprehensive color system** with proper contrast ratios
-- **Progressive disclosure** to manage complexity
-- **Mobile-first responsive design**
+1. Push to GitHub
+2. Import to Vercel/Netlify
+3. Set env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+4. Deploy
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+### Supabase Setup
 
-## Support
+1. Create Supabase project
+2. Deploy edge function from `supabase/functions/fetch-metadata`
+3. Set up tables matching the schema above
+4. Enable Row Level Security (RLS) for public reads on published bundles
 
-- **Issues**: Report bugs or request features via GitHub Issues
-- **Documentation**: Check this README for setup and usage
-- **Community**: Join discussions in GitHub Discussions
+## 🔒 Security Notes
 
-## 🔮 Roadmap
+- Anonymous publishing (user_id nullable)
+- Vanity URL validation and availability checks
+- RLS for database security
+- CORS headers in edge functions
+- Input sanitization for URLs
 
-- [ ] User accounts and private bundles
-- [ ] Bundle analytics and view tracking
-- [ ] Custom themes and branding
-- [ ] API for programmatic bundle creation
-- [ ] Browser extension for quick link adding
-- [ ] Bulk import from bookmarks
-- [ ] QR code generation for bundles
-- [ ] Social media preview optimization
+## Contributing
 
----
+1. Fork the repo
+2. Create feature branch
+3. Commit changes
+4. Push and open PR
 
-Built with ❤️ using React, TypeScript, and Supabase
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Acknowledgments
+
+Built with ❤️ using React, TypeScript, Tailwind, Supabase, and Framer Motion. Special thanks to open-source contributors.
