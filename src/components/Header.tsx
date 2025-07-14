@@ -157,7 +157,15 @@ export function Header({ theme, onThemeChange, onNewBundle, hasProgress = false 
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex justify-end">
+            <div className="mt-6 flex justify-end space-x-2">
+              <a
+                href="https://github.com/bermudi/share-urls-app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100 rounded-lg transition-colors"
+              >
+                GitHub
+              </a>
               <button
                 onClick={() => setShowAboutModal(false)}
                 className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-colors"
