@@ -1,11 +1,12 @@
 # 🔗 thesharing.link - Bundle and Share Multiple URLs
 
-
-[![License: MIT](https://pfst.cf2.poecdn.net/base/image/2c89badab92b5ee0afea1a6328677fab597eaa5d90b21f6a29384f9eaac3cbc0?pmaid=419939684)](https://opensource.org/licenses/MIT)\
-[![React](https://pfst.cf2.poecdn.net/base/image/1b6c0580b298367d92eb18486fdf53c6723781465d6adafa52fe015eb28e9ab2?pmaid=419939695)](https://reactjs.org/)\
-[![TypeScript](https://pfst.cf2.poecdn.net/base/image/876ce089cac37c5e2f6a8f250ad8ce7cac3d6d7d2dd8966608d436faa9358416?pmaid=419939699)](https://www.typescriptlang.org/)\
-[![Vite](https://pfst.cf2.poecdn.net/base/image/ff0cdb7940e81216ea0a92c2a685dd60a341f0f3713e7023f429066c350e426d?pmaid=419939709)](https://vitejs.dev/)\
-[![Supabase](https://pfst.cf2.poecdn.net/base/image/2023841e9daa7ee2768ff7a244263c4e3fa652f9a06722867a3ccc96466427f6?pmaid=419939710)](https://supabase.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.0.4-purple.svg)](https://vitejs.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-2.50.5-green.svg)](https://supabase.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.17-38B2AC.svg)](https://tailwindcss.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer%20Motion-12.23.3-ff69b4.svg)](https://www.framer.com/motion/)
 
 
 A modern, elegant web application for creating and sharing collections of URLs through a single shareable link. Perfect for curating resources, sharing reading lists, or organizing links for projects and presentations.
