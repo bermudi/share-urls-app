@@ -69,7 +69,7 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
 
         {/* Links Grid */}
         <div className="grid gap-6 md:grid-cols-2">
-          {bundle.links.map((link, index) => (
+          {bundle.links.map((link) => (
             <a
               key={link.id}
               href={link.url}
