@@ -40,10 +40,10 @@ function AppContent() {
   const loadPublicBundle = async (bundleId: string) => {
     setIsLoading(true);
     setBundleNotFound(false);
-    
+
     try {
       console.log('Loading bundle:', bundleId);
-      
+
       // Try to load by vanity URL first, then by ID
       let { data: bundle, error } = await supabase
         .from('bundles')
@@ -127,9 +127,9 @@ function AppContent() {
   const handleRemoveLink = (id: string) => {
     setLinks(prevLinks => prevLinks.filter(link => link.id !== id));
   };
-  
+
   const handleUpdateLink = (id: string, updatedLink: Partial<LinkItem>) => {
-    setLinks(prevLinks => prevLinks.map(link => 
+    setLinks(prevLinks => prevLinks.map(link =>
       link.id === id ? { ...link, ...updatedLink } : link
     ));
   };
@@ -152,10 +152,10 @@ function AppContent() {
     const maxRetries = 3;
     let attempt = 0;
     let lastError: Error | null = null;
-    
+
     // Extract the vanity URL from the share URL (remove the domain part)
     let tempVanityUrl: string;
-    
+
     try {
       const url = new URL(shareUrl);
       const pathParts = url.pathname.split('/').filter(Boolean);
@@ -164,20 +164,20 @@ function AppContent() {
       // If shareUrl is not a valid URL, use the existing vanityUrl or generate a new one
       tempVanityUrl = vanityUrl || generateFriendlyId();
     }
-    
+
     console.log('Publishing with vanity URL:', tempVanityUrl);
-    
+
     while (attempt < maxRetries) {
       try {
         console.log('Publishing bundle... (attempt', attempt + 1, ')');
         console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
         console.log('Supabase Key present:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
-        
+
         // For the first attempt, use the provided vanity URL
         // For retries, generate a new one if there was a conflict
         const finalVanityUrl = attempt === 0 ? tempVanityUrl : generateFriendlyId();
         console.log('Attempting to save with vanity URL:', finalVanityUrl);
-        
+
         const bundleData = {
           vanity_url: finalVanityUrl,
           description: description || null,
@@ -185,9 +185,9 @@ function AppContent() {
           user_id: null, // Explicitly set to null for anonymous users
           created_at: new Date().toISOString() // Make sure we have a creation timestamp
         };
-        
+
         console.log('Bundle data to insert:', bundleData);
-        
+
         const { data: bundle, error: bundleError } = await supabase
           .from('bundles')
           .insert(bundleData)
@@ -204,7 +204,7 @@ function AppContent() {
             }
             continue; // Retry with a new friendly ID
           }
-          
+
           console.error('Error creating bundle:', bundleError);
           throw new Error(`Failed to create bundle: ${bundleError.message}`);
         }
@@ -244,28 +244,28 @@ function AppContent() {
           createdAt: new Date(bundle.created_at || bundleData.created_at),
           published: true
         };
-        
+
         console.log('Bundle published successfully:', publishedBundleData);
-        
+
         setPublishedBundle(publishedBundleData);
-        
+
         // Clear local storage after successful publish
         setLinks([]);
         setVanityUrl('');
         setDescription('');
-        
+
         // Build the final URL
         const finalUrl = `${window.location.origin}/${finalVanityUrl}`;
-        
+
         // Update the browser URL
         window.history.pushState({}, '', `/${finalVanityUrl}`);
-        
+
         // Return the final URL to be used in the success message
         return finalUrl;
-        
+
         // Success - break out of retry loop
         break;
-        
+
       } catch (err) {
         console.error('Error publishing bundle:', err);
         if (attempt >= maxRetries - 1) {
@@ -277,7 +277,7 @@ function AppContent() {
         lastError = err instanceof Error ? err : new Error(String(err));
       }
     }
-    
+
     // If we get here, all retries failed
     const errorMessage = lastError ? lastError.message : 'Unknown error';
     toast.error(`Failed to publish bundle after ${maxRetries} attempts: ${errorMessage}`);
@@ -292,8 +292,12 @@ function AppContent() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-xl">url</span>
+          <div className="w-16 h-16 bg-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden">
+            <img
+              src="/images/logo.webp"
+              alt="thesharing.link logo"
+              className="w-10 h-10 object-contain"
+            />
           </div>
           <p className="text-gray-600 dark:text-gray-400">{t.errors.loadingBundle}</p>
         </div>
@@ -329,9 +333,9 @@ function AppContent() {
   // Show bundle viewer if we're viewing a published bundle
   if (viewMode === 'viewer' && publishedBundle) {
     return (
-      <BundleViewer 
-        bundle={publishedBundle} 
-        onBack={handleNewBundle} 
+      <BundleViewer
+        bundle={publishedBundle}
+        onBack={handleNewBundle}
       />
     );
   }
@@ -339,13 +343,13 @@ function AppContent() {
   // Show main editor interface
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-      <Header 
-        theme={theme} 
-        onThemeChange={setTheme} 
+      <Header
+        theme={theme}
+        onThemeChange={setTheme}
         onNewBundle={handleNewBundle}
         hasProgress={hasProgress}
       />
-      
+
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Bundle Settings with Publish Section */}
@@ -356,7 +360,7 @@ function AppContent() {
               onVanityUrlChange={setVanityUrl}
               onDescriptionChange={setDescription}
             />
-            
+
             {/* Publish Section */}
             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">

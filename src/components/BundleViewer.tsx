@@ -37,55 +37,51 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button */}
         <button
           onClick={onBack}
-          className="inline-flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors mb-8 text-sm font-medium"
+          className="inline-flex items-center space-x-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors mb-8 text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{t.viewer.backToEditor}</span>
         </button>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-center">
-            <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <LinkIcon className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-3">
-              {t.viewer.linkBundle}
-            </h1>
-            {bundle.description && (
-              <p className="text-indigo-100 max-w-md mx-auto text-sm">
-                {decodeHtmlEntities(bundle.description)}
-              </p>
-            )}
-            <div className="flex items-center justify-center space-x-2 mt-4 text-xs text-indigo-200">
-              <Calendar className="w-3.5 h-3.5" />
-              <span>{t.viewer.created} {bundle.createdAt.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            </div>
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full mb-4">
+            <LinkIcon className="w-8 h-8 text-teal-600 dark:text-teal-400" />
           </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {t.viewer.linkBundle}
+          </h1>
+          {bundle.description && (
+            <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+              {decodeHtmlEntities(bundle.description)}
+            </p>
+          )}
+          <div className="flex items-center justify-center space-x-2 mt-4 text-sm text-gray-500 dark:text-gray-400">
+            <Calendar className="w-4 h-4" />
+            <span>{t.viewer.created} {bundle.createdAt.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          </div>
+        </div>
 
-          {/* Links */}
-          <div className="divide-y divide-gray-100 dark:divide-gray-700">
-            {bundle.links.map((link, index) => (
-              <a
-                key={link.id}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors duration-150"
-              >
-                {/* Index */}
-                <div className="w-6 h-6 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 mr-3">
-                  {index + 1}
-                </div>
-
+        {/* Links Grid */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {bundle.links.map((link, index) => (
+            <a
+              key={link.id}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200 hover:-translate-y-1"
+            >
+              <div className="flex items-start space-x-4">
                 {/* Image/Favicon */}
-                <div className="flex-shrink-0 mr-3">
+                <div className="flex-shrink-0">
                   {isLargeImage(link) ? (
-                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
+                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                       <img
                         src={getImageSrc(link)}
                         alt=""
@@ -94,11 +90,11 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                       />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
+                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                       <img
                         src={getImageSrc(link)}
                         alt=""
-                        className="w-4 h-4 object-contain"
+                        className="w-6 h-6 object-contain"
                         onError={() => handleImageError(link.id)}
                       />
                     </div>
@@ -106,11 +102,14 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                 </div>
 
                 {/* Content */}
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
-                    {decodeHtmlEntities(link.title || link.url)}
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between">
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2">
+                      {decodeHtmlEntities(link.title || link.url)}
+                    </h3>
+                    <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-teal-500 dark:text-gray-500 dark:group-hover:text-teal-400 transition-colors flex-shrink-0 ml-2" />
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
                     {(() => {
                       try {
                         if (!link.url) return '';
@@ -121,35 +120,31 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
                       }
                     })()}
                   </p>
+                  {link.description && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
+                      {decodeHtmlEntities(link.description)}
+                    </p>
+                  )}
                 </div>
+              </div>
+            </a>
+          ))}
+        </div>
 
-                {/* External Link Icon */}
-                <div className="text-gray-300 group-hover:text-indigo-500 dark:text-gray-500 dark:group-hover:text-indigo-400 transition-colors ml-2">
-                  <ExternalLink className="w-4 h-4" />
-                </div>
-              </a>
-            ))}
-          </div>
-
-          {/* Footer */}
-          <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {`${bundle.links.length} ${bundle.links.length === 1 ? 'link' : 'links'}`}
-            </p>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t.viewer.madeWith}{' '}
-              <a
-                href="/"
-                className="text-teal-500 hover:text-teal-600 transition-colors font-medium"
-              >
-                thesharing.link
-              </a>
-            </p>
-          </div>
+        {/* Footer */}
+        <div className="mt-12 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            {`${bundle.links.length} ${bundle.links.length === 1 ? 'link' : 'links'}`}
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {t.viewer.madeWith}{' '}
+            <a
+              href="/"
+              className="text-teal-500 hover:text-teal-600 transition-colors font-medium"
+            >
+              thesharing.link
+            </a>
+          </p>
         </div>
       </div>
     </div>
