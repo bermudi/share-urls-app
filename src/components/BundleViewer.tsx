@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ExternalLink, Calendar, ArrowLeft, Link as LinkIcon } from 'lucide-react';
+import { ExternalLink, Calendar, ArrowLeft, Link as LinkIcon, RefreshCw } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { decodeHtmlEntities } from '../utils/htmlUtils';
 import type { Bundle } from '../types';
@@ -7,9 +7,10 @@ import type { Bundle } from '../types';
 interface BundleViewerProps {
   bundle: Bundle;
   onBack: () => void;
+  onRemix?: (bundle: Bundle) => void;
 }
 
-export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
+export function BundleViewer({ bundle, onBack, onRemix }: BundleViewerProps) {
   const { t } = useTranslation();
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
@@ -39,14 +40,26 @@ export function BundleViewer({ bundle, onBack }: BundleViewerProps) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Back Button */}
-        <button
-          onClick={onBack}
-          className="inline-flex items-center space-x-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors mb-8 text-sm font-medium"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>{t.viewer.backToEditor}</span>
-        </button>
+        {/* Back and Remix Buttons */}
+        <div className="flex items-center gap-3 mb-8">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center space-x-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>{t.viewer.backToEditor}</span>
+          </button>
+          
+          {onRemix && (
+            <button
+              onClick={() => onRemix(bundle)}
+              className="inline-flex items-center space-x-2 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors text-sm font-medium"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>{t.viewer.remix}</span>
+            </button>
+          )}
+        </div>
 
         {/* Header */}
         <div className="text-center mb-12">

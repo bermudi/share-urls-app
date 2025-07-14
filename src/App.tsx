@@ -12,7 +12,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { useTheme } from './hooks/useTheme';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTranslation } from './hooks/useTranslation';
-import { generateFriendlyId } from './utils/urlUtils';
+import { generateFriendlyId, generateId } from './utils/urlUtils';
 import { supabase } from './lib/supabase';
 import type { LinkItem, Bundle } from './types';
 
@@ -146,6 +146,35 @@ function AppContent() {
     window.history.pushState({}, '', '/');
     // Reset the reset flag after a brief delay
     setTimeout(() => setResetPublishButton(false), 100);
+  };
+  
+  const handleRemix = (bundle: Bundle) => {
+    // Create new links with new IDs but keep the content
+    const remixedLinks = bundle.links.map(link => ({
+      ...link,
+      id: generateId(), // Generate new unique ID
+      addedAt: new Date() // Reset timestamp
+    }));
+    
+    // Set the links in the editor
+    setLinks(remixedLinks);
+    
+    // Copy the description but clear the vanity URL
+    setDescription(bundle.description || '');
+    setVanityUrl('');
+    
+    // Switch to editor mode
+    setViewMode('editor');
+    
+    // Reset publish button state
+    setResetPublishButton(true);
+    setTimeout(() => setResetPublishButton(false), 100);
+    
+    // Clear URL to avoid confusion
+    window.history.pushState({}, '', '/');
+    
+    // Clear the published bundle reference
+    setPublishedBundle(null);
   };
 
   const handlePublish = async (shareUrl: string): Promise<string> => {
@@ -336,6 +365,7 @@ function AppContent() {
       <BundleViewer
         bundle={publishedBundle}
         onBack={handleNewBundle}
+        onRemix={handleRemix}
       />
     );
   }

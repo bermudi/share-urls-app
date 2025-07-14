@@ -52,6 +52,7 @@ export interface Translations {
     backToEditor: string;
     created: string;
     madeWith: string;
+    remix: string;
   };
 
   // Errors and states
@@ -155,6 +156,7 @@ const translations: Record<Language, Translations> = {
       backToEditor: 'Back to editor',
       created: 'Created',
       madeWith: 'Made with ',
+      remix: 'Remix bundle',
     },
     errors: {
       invalidUrl: 'Please enter a valid URL',
@@ -248,6 +250,7 @@ const translations: Record<Language, Translations> = {
       backToEditor: 'Volver al editor',
       created: 'Creado',
       madeWith: 'Hecho con ',
+      remix: 'Remixar paquete',
     },
     errors: {
       invalidUrl: 'Por favor ingresa una URL válida',
@@ -342,6 +345,7 @@ const translations: Record<Language, Translations> = {
       backToEditor: 'Retour à l\'éditeur',
       created: 'Créé',
       madeWith: 'Fait avec ',
+      remix: 'Remixer la collection',
     },
     errors: {
       invalidUrl: 'Veuillez entrer une URL valide',
@@ -436,6 +440,7 @@ const translations: Record<Language, Translations> = {
       backToEditor: 'Zurück zum Editor',
       created: 'Erstellt',
       madeWith: 'Erstellt mit ',
+      remix: 'Bundle remixen',
     },
     errors: {
       invalidUrl: 'Bitte geben Sie eine gültige URL ein',
@@ -530,6 +535,7 @@ const translations: Record<Language, Translations> = {
       backToEditor: 'Voltar ao editor',
       created: 'Criado',
       madeWith: 'Feito com ',
+      remix: 'Remixar pacote',
     },
     errors: {
       invalidUrl: 'Por favor, insira uma URL válida',
@@ -624,6 +630,7 @@ const translations: Record<Language, Translations> = {
       backToEditor: 'エディターに戻る',
       created: '作成日',
       madeWith: '作成',
+      remix: 'バンドルをリミックス',
     },
     errors: {
       invalidUrl: '有効なURLを入力してください',
@@ -718,6 +725,7 @@ const translations: Record<Language, Translations> = {
       backToEditor: '편집기로 돌아가기',
       created: '생성일',
       madeWith: '제작',
+      remix: '번들 리믹스',
     },
     errors: {
       invalidUrl: '유효한 URL을 입력해주세요',
@@ -808,10 +816,11 @@ const translations: Record<Language, Translations> = {
       removeLink: '删除链接',
     },
     viewer: {
-      linkBundle: 'thesharing.link',
+      linkBundle: '链接集合',
       backToEditor: '返回编辑器',
       created: '创建于',
       madeWith: '使用 ',
+      remix: '重新编辑集合',
     },
     errors: {
       invalidUrl: '请输入有效的网址',
